@@ -1,8 +1,7 @@
-package com.bereznev.studentrecords.exception;
+package com.bereznev.clients.exception;
 /*
     =====================================
-    @project StudentRecords
-    @created 06/02/2023    
+    @project ClientsMicroservice
     @author Bereznev Nikita @CreativeWex
     =====================================
  */

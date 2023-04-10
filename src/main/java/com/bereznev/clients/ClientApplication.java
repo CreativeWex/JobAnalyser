@@ -1,13 +1,13 @@
-package com.bereznev.studentrecords;
+package com.bereznev.clients;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StudentRecordsApplication {
+public class ClientApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(StudentRecordsApplication.class, args);
+        SpringApplication.run(ClientApplication.class, args);
     }
 
 }

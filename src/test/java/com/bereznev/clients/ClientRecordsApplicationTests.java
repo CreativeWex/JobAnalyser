@@ -1,10 +1,10 @@
-package com.bereznev.studentrecords;
+package com.bereznev.clients;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class StudentRecordsApplicationTests {
+class ClientRecordsApplicationTests {
 
     @Test
     void contextLoads() {
