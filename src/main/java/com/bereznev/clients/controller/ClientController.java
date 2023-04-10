@@ -10,7 +10,6 @@ import com.bereznev.clients.entity.Client;
 import com.bereznev.clients.exception.BadArgumentsException;
 import com.bereznev.clients.exception.ExceptionConverter;
 import com.bereznev.clients.service.ClientService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
