@@ -11,6 +11,8 @@ import com.bereznev.clients.exception.ResourceNotFoundException;
 import com.bereznev.clients.entity.Client;
 import com.bereznev.clients.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

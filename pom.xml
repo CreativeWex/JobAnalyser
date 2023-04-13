@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
     <groupId>com.bereznev</groupId>
-    <artifactId>StudentRecords</artifactId>
+    <artifactId>ClientMicroservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>StudentRecords</name>
-    <description>StudentRecords</description>
+    <name>ClientMicroservice</name>
+    <description>ClientMicroservice</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -63,6 +63,14 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <version>9.16.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
         </dependency>
 
     </dependencies>

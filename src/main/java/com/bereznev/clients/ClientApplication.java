@@ -1,5 +1,12 @@
 package com.bereznev.clients;
 
+/*
+    =====================================
+    @project ClientMicroservice
+    @author Bereznev Nikita @CreativeWex
+    =====================================
+*/
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
