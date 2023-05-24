@@ -12,6 +12,9 @@ import com.bereznev.clients.entity.Client;
 import com.bereznev.clients.repository.ClientRepository;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +33,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @CachePut(value = "clients", key = "#result.id")
     public Client save(Client client) {
         String email = client.getEmail();
         if (clientRepository.findClient(email).isPresent()) {
@@ -40,18 +44,21 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Cacheable(value = "clients")
     public List<Client> getAll() {
         log.debug("getAll invoked");
         return clientRepository.findAll();
     }
 
     @Override
+    @Cacheable(value = "clients", key = "#id")
     public Client findById(Long id) {
         log.debug("findById invoked: " + id);
         return clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "Id", id));
     }
 
     @Override
+    @CachePut(value = "clients", key = "#id")
     public Client update(Long id, Client updatedClient) {
         Client existedClient = clientRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(RESOURCE_NAME, "Id", id));
@@ -70,6 +77,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @CacheEvict(value = "clients", key = "#id")
     public void delete(Long id) {
         clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "Id", id));
         clientRepository.deleteById(id);
