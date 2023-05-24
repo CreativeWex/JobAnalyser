@@ -1,11 +1,12 @@
 # Client Microservice REST API
 
-### Стек
+## Использованные технологии
 
-- **Платформа**: Java, Spring (Boot, Data JPA);
-- **Хранение данных**: PostgreSQL, Hibernate ORM, FlyWay;
-- **Деплой**: Maven, Docker, Docker Compose;
-- **Дополнительные технологии**: Lombok, Jackson, Postman;
+- **Платформа**: Java, Spring Boot;
+- **Библиотеки**: Lombok, Log4j;
+- **Взаимодействие с БД**: Hibernate ORM, Spring Data JPA, PostgreSQL;
+- **Кеширование**: Redis;
+- **Сборка и развертывание**: Maven, Docker, Docker-Compose, Apache Tomcat;
 
 ### Endpoints
 

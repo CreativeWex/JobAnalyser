@@ -1,0 +1,24 @@
+version: '3'
+services:
+  postgreSQL:
+    image: postgres:14.5
+    container_name: "postgreSQL"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    hostname: postgreSQL
+
+  redis:
+    image: "redis"
+    container_name: "redis"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    hostname: redis
