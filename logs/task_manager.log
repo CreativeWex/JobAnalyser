@@ -1,1 +1,32 @@
 2023-05-25 01:56:10 DEBUG ClientServiceImpl:44 - getAll invoked
+2023-05-25 02:08:19 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:08:20 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:08:21 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:08:22 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:08:37 DEBUG ClientServiceImpl:42 - saved: Client(id=24, firstName=wex, lastName=wex, email=wex@wex.ru)
+2023-05-25 02:08:41 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:08:42 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:08:43 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:08:44 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:09:04 DEBUG ClientServiceImpl:84 - deleted, id: 4
+2023-05-25 02:09:11 DEBUG ClientServiceImpl:84 - deleted, id: 6
+2023-05-25 02:09:16 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:09:17 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:10:10 DEBUG ClientServiceImpl:75 - updated client: Client(id=11, firstName=Sergey, lastName=Nikiforov, email=mastersurv@yandex.ru)
+2023-05-25 02:10:17 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:19:37 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:19:47 DEBUG ClientServiceImpl:42 - saved: Client(id=24, firstName=wex, lastName=wex, email=wex@wex.ru)
+2023-05-25 02:21:52 DEBUG ClientServiceImpl:84 - deleted, id: 7
+2023-05-25 02:22:03 DEBUG ClientServiceImpl:42 - saved: Client(id=24, firstName=wex, lastName=wex, email=wex@wex.ru)
+2023-05-25 02:41:40 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:43:49 DEBUG ClientServiceImpl:84 - deleted, id: 3
+2023-05-25 02:45:41 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:45:43 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:45:56 DEBUG ClientServiceImpl:84 - deleted, id: 8
+2023-05-25 02:45:58 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:46:05 DEBUG ClientServiceImpl:42 - saved: Client(id=24, firstName=wex, lastName=wex, email=wex@wex.ru)
+2023-05-25 02:46:15 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:46:16 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:46:17 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:46:17 DEBUG ClientServiceImpl:49 - getAll invoked
+2023-05-25 02:46:18 DEBUG ClientServiceImpl:49 - getAll invoked
