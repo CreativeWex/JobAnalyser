@@ -7,6 +7,7 @@ package com.bereznev.vacancies.service;
 
 import com.bereznev.vacancies.entity.Employer;
 import com.bereznev.vacancies.entity.Vacancy;
+import com.bereznev.vacancies.utils.HttpUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j;
@@ -36,35 +37,11 @@ public class EmployerServiceImpl implements EmployerService{
         return gson.fromJson(jsonResponse, Employer.class);
     }
 
-    //TODO: переиспользование кода
     //TODO: добавить area
     @Override
     public Employer getById(long employerId) {
-        try {
-            URL url = new URL("https://api.hh.ru/employers/" + employerId);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                log.error("Request sending error. Response status: " + responseCode);
-                return new Employer();
-            }
-
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = bufferedReader.readLine()) != null) {
-                response.append(inputLine);
-            }
-
-            bufferedReader.close();
-            connection.disconnect();
-            return convertJsonEmployersToList(response.toString());
-        } catch (IOException e) {
-            log.error("Request sending error: " + e.getMessage());
-            return new Employer();
-        }
+        String response = HttpUtils.sendHttpRequest("https://api.hh.ru/employers/" + employerId, "EmployerServiceImpl (getById)");
+        return convertJsonEmployersToList(response);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.bereznev.vacancies;
 
 /*
     =====================================
-    @project ClientMicroservice
     @author Bereznev Nikita @CreativeWex
     =====================================
 */
@@ -11,10 +10,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ClientApplication {
+public class hhRuParserApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ClientApplication.class, args);
+        SpringApplication.run(hhRuParserApplication.class, args);
     }
 
 }
