@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Log4j
 @RestController
@@ -29,13 +30,8 @@ public class EmployerController {
         this.employerService = employerService;
     }
 
-    //TODO
     @GetMapping
-    public ResponseEntity<List<Employer>> getEmployersByVacancy(@RequestParam("text") String vacancyName) {
-        try {
-            return new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Set<Employer>> getEmployersByVacancy(@RequestParam("text") String vacancyName) {
+        return new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName), HttpStatus.OK);
     }
 }
