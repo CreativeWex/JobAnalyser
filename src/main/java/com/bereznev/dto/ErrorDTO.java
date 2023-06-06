@@ -1,4 +1,4 @@
-package com.bereznev.vacancies.model.json_response;
+package com.bereznev.dto;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class ErrorResponse {
+public class ErrorDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private LocalDateTime timestamp;

@@ -1,15 +1,11 @@
-package com.bereznev.vacancies.utils;
+package com.bereznev.utils;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-import com.bereznev.vacancies.exception.SendingUrlRequestException;
-import com.github.scribejava.apis.HHApi;
-import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.oauth.OAuth20Service;
-import org.springframework.beans.factory.annotation.Value;
+import com.bereznev.exception.SendingUrlRequestException;
 
 import java.io.BufferedReader;
 import java.io.IOException;

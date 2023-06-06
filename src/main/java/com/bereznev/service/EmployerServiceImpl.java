@@ -1,14 +1,14 @@
-package com.bereznev.vacancies.service;
+package com.bereznev.service;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-import com.bereznev.vacancies.entity.Employer;
-import com.bereznev.vacancies.entity.Vacancy;
-import com.bereznev.vacancies.model.json_response.EmployerResponse;
-import com.bereznev.vacancies.utils.HttpUtils;
+import com.bereznev.dto.EmployerDTO;
+import com.bereznev.utils.HttpUtils;
+import com.bereznev.model.Employer;
+import com.bereznev.model.Vacancy;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
 import org.json.JSONObject;
@@ -30,7 +30,7 @@ public class EmployerServiceImpl implements EmployerService {
         this.vacancyService = vacancyService;
     }
 
-    private Employer convertJsonEmployersToList(String jsonResponse) {
+    private Employer convertJsonEmployerToList(String jsonResponse) {
         Gson gson = new Gson();
         Employer employer = gson.fromJson(jsonResponse, Employer.class);
 
@@ -38,8 +38,9 @@ public class EmployerServiceImpl implements EmployerService {
         JSONObject areaObject = jsonObject.getJSONObject("area");
         String areaName = areaObject.getString("name");
         employer.setLocation(areaName);
-        employer.setDescription(employer.getDescription().replaceAll("\\<.*?\\>", ""));
-
+        if (employer.getDescription() != null) {
+            employer.setDescription(employer.getDescription().replaceAll("\\<.*?\\>", ""));
+        }
         return employer;
     }
 
@@ -47,11 +48,21 @@ public class EmployerServiceImpl implements EmployerService {
     public Employer getById(long employerId) {
         String response = HttpUtils.sendHttpRequest(EMPLOYERS_API_URL + employerId,
                 "EmployerServiceImpl (getById)");
-        return convertJsonEmployersToList(response);
+        return convertJsonEmployerToList(response);
+    }
+
+    //TODO: начал работу над методом
+    @Override
+    public EmployerDTO getAll() {
+        String response = HttpUtils.sendHttpRequest(EMPLOYERS_API_URL,
+                "EmployerServiceImpl (getAll())");
+//        List<Employer> employers = convertJsonEmployerToList(response);
+
+        return null;
     }
 
     @Override
-    public EmployerResponse getEmployersByVacancy(String vacancyName) {
+    public EmployerDTO getEmployersByVacancy(String vacancyName) {
         List<Vacancy> vacancies = vacancyService.getVacanciesByName(vacancyName);
         Set<Employer> employers = new HashSet<>();
         for (Vacancy vacancy : vacancies) {
@@ -60,11 +71,11 @@ public class EmployerServiceImpl implements EmployerService {
             }
             employers.add(getById(vacancy.getEmployer().getId()));
         }
-        return new EmployerResponse(vacancyName, employers.size(), employers);
+        return new EmployerDTO(vacancyName, employers.size(), employers);
     }
 
     @Override
-    public EmployerResponse getEmployersByVacancy(String vacancyName, String location) {
+    public EmployerDTO getEmployersByVacancy(String vacancyName, String location) {
         List<Vacancy> vacancies = vacancyService.getVacanciesByName(vacancyName);
         Set<Employer> employers = new HashSet<>();
         for (Vacancy vacancy : vacancies) {
@@ -77,6 +88,6 @@ public class EmployerServiceImpl implements EmployerService {
             }
             employers.add(employer);
         }
-        return new EmployerResponse(vacancyName, employers.size(), employers);
+        return new EmployerDTO(vacancyName, employers.size(), employers);
     }
 }

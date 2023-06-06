@@ -5,7 +5,7 @@
 ## Использованные технологии
 
 - **Платформа**: Java, Spring Boot;
-- **Библиотеки**: Lombok, Log4j;
+- **Библиотеки**: Lombok, Log4j, Gson;
 - **Взаимодействие с БД**: Hibernate ORM, Spring Data JPA, PostgreSQL;
 - **Кеширование**: Redis;
 - **Сборка и развертывание**: Maven, Docker, Docker-Compose, Apache Tomcat;

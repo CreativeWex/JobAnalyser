@@ -1,4 +1,4 @@
-package com.bereznev.vacancies.exception;
+package com.bereznev.exception;
 /*
     =====================================
     @project ClientsMicroservice

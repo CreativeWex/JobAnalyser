@@ -1,11 +1,11 @@
-package com.bereznev.vacancies.model.json_response;
+package com.bereznev.dto;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-import com.bereznev.vacancies.entity.Employer;
+import com.bereznev.model.Employer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployerResponse {
+public class EmployerDTO {
 
     @JsonProperty("vacancy")
     private String vacancyName;

@@ -1,4 +1,4 @@
-package com.bereznev.vacancies;
+package com.bereznev;
 
 /*
     =====================================

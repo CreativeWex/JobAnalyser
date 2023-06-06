@@ -1,4 +1,4 @@
-package com.bereznev.vacancies.entity;
+package com.bereznev.model;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Employer {
+
     private long id;
 
     private String name;

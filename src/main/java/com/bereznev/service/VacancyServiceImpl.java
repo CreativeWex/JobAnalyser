@@ -1,13 +1,13 @@
-package com.bereznev.vacancies.service;
+package com.bereznev.service;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-import com.bereznev.vacancies.entity.Vacancy;
-import com.bereznev.vacancies.model.json_response.VacancyResponse;
-import com.bereznev.vacancies.utils.HttpUtils;
+import com.bereznev.model.Vacancy;
+import com.bereznev.mapper.VacanciesMapper;
+import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
 import org.json.JSONObject;
@@ -22,8 +22,8 @@ public class VacancyServiceImpl implements VacancyService {
     private static final String VACANCY_API_URL = "https://api.hh.ru/vacancies";
     private List<Vacancy> convertJsonVacanciesToList(String jsonResponse) {
         Gson gson = new Gson();
-        VacancyResponse vacancyResponse = gson.fromJson(jsonResponse, VacancyResponse.class);
-        return vacancyResponse.getItems();
+        VacanciesMapper vacanciesMapper = gson.fromJson(jsonResponse, VacanciesMapper.class);
+        return vacanciesMapper.getItems();
     }
 
     private int countPagesNumber(String vacancyName) {

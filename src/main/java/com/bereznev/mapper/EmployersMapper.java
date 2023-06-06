@@ -1,16 +1,18 @@
-package com.bereznev.vacancies.entity;
+package com.bereznev.mapper;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
+import com.bereznev.model.Employer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
-public class Vacancy {
-    private String id;
-    private Employer employer;
+public class EmployersMapper {
+    private List<Employer> employers;
 }

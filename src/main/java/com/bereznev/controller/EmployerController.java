@@ -1,13 +1,13 @@
-package com.bereznev.vacancies.controller;
+package com.bereznev.controller;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-import com.bereznev.vacancies.exception.SendingUrlRequestException;
-import com.bereznev.vacancies.model.json_response.ErrorResponse;
-import com.bereznev.vacancies.service.EmployerService;
+import com.bereznev.exception.SendingUrlRequestException;
+import com.bereznev.dto.ErrorDTO;
+import com.bereznev.service.EmployerService;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +28,22 @@ public class EmployerController {
         this.employerService = employerService;
     }
 
+//    @GetMapping
+//    public ResponseEntity<?> getAll() {
+//        try {
+//
+//        } catch (SendingUrlRequestException exception) {
+//            ErrorDTO response = new ErrorDTO(
+//                    LocalDateTime.now(),
+//                    exception.getResponseCode(),
+//                    exception.getException().getMessage(),
+//                    "/api/v1/employers",
+//                    exception.getResourceName()
+//            );
+//            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
+//        }
+//    }
+
     @GetMapping
     public ResponseEntity<?> getEmployersByVacancy(
             @RequestParam("vacancy") String vacancyName,
@@ -36,7 +52,7 @@ public class EmployerController {
             return location.map(s -> new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName, s), HttpStatus.OK))
                     .orElseGet(() -> new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName), HttpStatus.OK));
         } catch (SendingUrlRequestException exception) {
-            ErrorResponse response = new ErrorResponse(
+            ErrorDTO response = new ErrorDTO(
                     LocalDateTime.now(),
                     exception.getResponseCode(),
                     exception.getException().getMessage(),

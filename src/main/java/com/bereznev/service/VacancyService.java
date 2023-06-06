@@ -1,11 +1,11 @@
-package com.bereznev.vacancies.service;
+package com.bereznev.service;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-import com.bereznev.vacancies.entity.Vacancy;
+import com.bereznev.model.Vacancy;
 
 import java.util.List;
 
