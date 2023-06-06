@@ -21,7 +21,7 @@ import java.util.Set;
 
 @Log4j
 @Service
-public class EmployerServiceImpl implements EmployerService{
+public class EmployerServiceImpl implements EmployerService {
     private final VacancyService vacancyService;
     private static final String EMPLOYERS_API_URL = "https://api.hh.ru/employers/";
 
@@ -59,6 +59,23 @@ public class EmployerServiceImpl implements EmployerService{
                 continue;
             }
             employers.add(getById(vacancy.getEmployer().getId()));
+        }
+        return new EmployerResponse(vacancyName, employers.size(), employers);
+    }
+
+    @Override
+    public EmployerResponse getEmployersByVacancy(String vacancyName, String location) {
+        List<Vacancy> vacancies = vacancyService.getVacanciesByName(vacancyName);
+        Set<Employer> employers = new HashSet<>();
+        for (Vacancy vacancy : vacancies) {
+            if (vacancy.getEmployer().getId() == 0) {
+                continue;
+            }
+            Employer employer = getById(vacancy.getEmployer().getId());
+            if (!employer.getLocation().equalsIgnoreCase(location)) {
+                continue;
+            }
+            employers.add(employer);
         }
         return new EmployerResponse(vacancyName, employers.size(), employers);
     }

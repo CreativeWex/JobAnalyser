@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Log4j
 @RestController
@@ -28,9 +29,12 @@ public class EmployerController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getEmployersByVacancy(@RequestParam("vacancy") String vacancyName) {
+    public ResponseEntity<?> getEmployersByVacancy(
+            @RequestParam("vacancy") String vacancyName,
+            @RequestParam(value = "location", required = false) Optional<String> location) {
         try {
-            return new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName), HttpStatus.OK);
+            return location.map(s -> new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName, s), HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName), HttpStatus.OK));
         } catch (SendingUrlRequestException exception) {
             ErrorResponse response = new ErrorResponse(
                     LocalDateTime.now(),
