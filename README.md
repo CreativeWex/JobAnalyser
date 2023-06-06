@@ -10,6 +10,8 @@
 - **Кеширование**: Redis;
 - **Сборка и развертывание**: Maven, Docker, Docker-Compose, Apache Tomcat;
 
+<br>
+
 ## Endpoints
 
 <h4 align="center">Работодатели</h4>
