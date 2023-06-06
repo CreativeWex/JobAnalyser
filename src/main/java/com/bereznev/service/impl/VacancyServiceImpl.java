@@ -1,4 +1,4 @@
-package com.bereznev.service;
+package com.bereznev.service.impl;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
@@ -7,6 +7,7 @@ package com.bereznev.service;
 
 import com.bereznev.model.Vacancy;
 import com.bereznev.mapper.VacanciesMapper;
+import com.bereznev.service.VacancyService;
 import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;

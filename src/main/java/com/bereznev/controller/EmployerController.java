@@ -28,29 +28,20 @@ public class EmployerController {
         this.employerService = employerService;
     }
 
-//    @GetMapping
-//    public ResponseEntity<?> getAll() {
-//        try {
-//
-//        } catch (SendingUrlRequestException exception) {
-//            ErrorDTO response = new ErrorDTO(
-//                    LocalDateTime.now(),
-//                    exception.getResponseCode(),
-//                    exception.getException().getMessage(),
-//                    "/api/v1/employers",
-//                    exception.getResourceName()
-//            );
-//            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
-//        }
-//    }
+// TODO: рефакторинг
 
     @GetMapping
     public ResponseEntity<?> getEmployersByVacancy(
-            @RequestParam("vacancy") String vacancyName,
+            @RequestParam(value = "vacancy", required = false) Optional<String> vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
         try {
-            return location.map(s -> new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName, s), HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName), HttpStatus.OK));
+            if (vacancyName.isPresent() && location.isEmpty()) {
+                return new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName.get()), HttpStatus.OK);
+            } else if (vacancyName.isPresent() && location.isPresent()) {
+                return new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName.get(), location.get()), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(employerService.getAll(), HttpStatus.OK);
+            }
         } catch (SendingUrlRequestException exception) {
             ErrorDTO response = new ErrorDTO(
                     LocalDateTime.now(),

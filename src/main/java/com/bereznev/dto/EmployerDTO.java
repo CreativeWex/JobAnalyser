@@ -18,9 +18,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class EmployerDTO {
 
-    @JsonProperty("vacancy")
-    private String vacancyName;
-
     @JsonProperty("found")
     private int employersNumber;
 

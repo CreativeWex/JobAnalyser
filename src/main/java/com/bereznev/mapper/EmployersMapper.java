@@ -14,5 +14,5 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class EmployersMapper {
-    private List<Employer> employers;
+    private List<Employer> items;
 }
