@@ -1,23 +1,25 @@
-package com.bereznev.vacancies.exception;
+package com.bereznev.exception;
 /*
     =====================================
-    @project ClientsMicroservice
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+import java.io.IOException;
+
 @Getter
 public class SendingUrlRequestException extends RuntimeException {
 
     private final String resourceName;
+    private final int responseCode;
+    private final IOException exception;
 
-    public SendingUrlRequestException(String resourceName) {
+    public SendingUrlRequestException(String resourceName, int responseCode, IOException exception) {
         super(String.format("%s: failed to send http request'", resourceName));
         this.resourceName = resourceName;
+        this.responseCode = responseCode;
+        this.exception = exception;
     }
 }

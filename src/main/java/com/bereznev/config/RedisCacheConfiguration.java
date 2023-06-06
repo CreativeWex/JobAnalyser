@@ -1,4 +1,4 @@
-package com.bereznev.vacancies.config;
+package com.bereznev.config;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex

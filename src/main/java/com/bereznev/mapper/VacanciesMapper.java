@@ -1,11 +1,11 @@
-package com.bereznev.vacancies.model;
+package com.bereznev.mapper;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-import com.bereznev.vacancies.entity.Vacancy;
+import com.bereznev.model.Vacancy;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +13,6 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class Response {
+public class VacanciesMapper {
     private List<Vacancy> items;
 }

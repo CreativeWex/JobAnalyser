@@ -1,4 +1,4 @@
-package com.bereznev.vacancies.entity;
+package com.bereznev.model;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex

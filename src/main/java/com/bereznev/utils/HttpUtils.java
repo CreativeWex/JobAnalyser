@@ -1,11 +1,11 @@
-package com.bereznev.vacancies.utils;
+package com.bereznev.utils;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-import com.bereznev.vacancies.exception.SendingUrlRequestException;
+import com.bereznev.exception.SendingUrlRequestException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,12 +19,13 @@ public class HttpUtils {
     }
 
     public static String sendHttpRequest(String url, String resource) {
+        int responseCode = HttpURLConnection.HTTP_OK;
         try {
             URL requestUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
             connection.setRequestMethod("GET");
 
-            int responseCode = connection.getResponseCode();
+            responseCode = connection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 throw new IOException("Request sending error. Response status: " + responseCode);
             }
@@ -40,7 +41,7 @@ public class HttpUtils {
             connection.disconnect();
             return response.toString();
         } catch (IOException e) {
-            throw new SendingUrlRequestException(resource);
+            throw new SendingUrlRequestException(resource, responseCode, e);
         }
     }
 }

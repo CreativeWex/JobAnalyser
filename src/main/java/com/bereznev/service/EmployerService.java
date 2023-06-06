@@ -1,16 +1,18 @@
-package com.bereznev.vacancies.service;
+package com.bereznev.service;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-import com.bereznev.vacancies.entity.Employer;
-
-import java.util.List;
+import com.bereznev.model.Employer;
+import com.bereznev.dto.EmployerDTO;
 
 public interface EmployerService {
-    public List<Employer> getEmployersByVacancy(String vacancyName);
+
+    public EmployerDTO getAll();
+    public EmployerDTO getEmployersByVacancy(String vacancyName);
+    public EmployerDTO getEmployersByVacancy(String vacancyName, String location);
     public Employer getById(long employerId);
 //    public List<Employer> getEmployersByRegion(String region);
 //    public List<Employer> getEmployersWithOpenVacancies();
