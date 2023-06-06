@@ -11,6 +11,7 @@ import com.bereznev.vacancies.model.json_response.EmployerResponse;
 import com.bereznev.vacancies.utils.HttpUtils;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +32,16 @@ public class EmployerServiceImpl implements EmployerService{
 
     private Employer convertJsonEmployersToList(String jsonResponse) {
         Gson gson = new Gson();
-        return gson.fromJson(jsonResponse, Employer.class);
+        Employer employer = gson.fromJson(jsonResponse, Employer.class);
+
+        JSONObject jsonObject = new JSONObject(jsonResponse);
+        JSONObject areaObject = jsonObject.getJSONObject("area");
+        String areaName = areaObject.getString("name");
+        employer.setLocation(areaName);
+
+        return employer;
     }
 
-    //TODO: добавить area
     @Override
     public Employer getById(long employerId) {
         String response = HttpUtils.sendHttpRequest(EMPLOYERS_API_URL + employerId,
