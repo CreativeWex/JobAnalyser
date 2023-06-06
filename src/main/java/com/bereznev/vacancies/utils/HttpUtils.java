@@ -19,12 +19,6 @@ import java.net.URL;
 
 public class HttpUtils {
 
-    @Value("${auth.client.id}")
-    private static String CLIENT_ID;
-
-    @Value("${auth.client.secret}")
-    private static String CLIENT_SECRET;
-
     private HttpUtils() {
     }
 

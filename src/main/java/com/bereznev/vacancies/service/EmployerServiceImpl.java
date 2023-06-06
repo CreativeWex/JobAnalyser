@@ -47,6 +47,9 @@ public class EmployerServiceImpl implements EmployerService{
         List<Vacancy> vacancies = vacancyService.getVacanciesByName(vacancyName);
         Set<Employer> employers = new HashSet<>();
         for (Vacancy vacancy : vacancies) {
+            if (vacancy.getEmployer().getId() == 0) {
+                continue;
+            }
             employers.add(getById(vacancy.getEmployer().getId()));
         }
         return new EmployerResponse(vacancyName, employers.size(), employers);

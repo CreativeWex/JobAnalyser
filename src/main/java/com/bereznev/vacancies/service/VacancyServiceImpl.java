@@ -35,7 +35,7 @@ public class VacancyServiceImpl implements VacancyService {
     // TODO: количество страниц в цикле
     @Override
     public List<Vacancy> getVacanciesByName(String vacancyName) {
-        vacancyName = vacancyName.trim();
+        vacancyName = vacancyName.trim().replaceAll(" ","+");
 //        int pagesNumber = countPagesNumber(vacancyName);
 //        List<Vacancy> vacancies = new ArrayList<>();
 //        for (int i = 0; i < 5; i++) {
