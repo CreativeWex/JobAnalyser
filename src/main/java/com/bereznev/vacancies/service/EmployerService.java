@@ -6,12 +6,10 @@ package com.bereznev.vacancies.service;
  */
 
 import com.bereznev.vacancies.entity.Employer;
-
-import java.util.List;
-import java.util.Set;
+import com.bereznev.vacancies.model.json_response.EmployerResponse;
 
 public interface EmployerService {
-    public Set<Employer> getEmployersByVacancy(String vacancyName);
+    public EmployerResponse getEmployersByVacancy(String vacancyName);
     public Employer getById(long employerId);
 //    public List<Employer> getEmployersByRegion(String region);
 //    public List<Employer> getEmployersWithOpenVacancies();

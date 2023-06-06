@@ -6,6 +6,10 @@ package com.bereznev.vacancies.utils;
  */
 
 import com.bereznev.vacancies.exception.SendingUrlRequestException;
+import com.github.scribejava.apis.HHApi;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.oauth.OAuth20Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,16 +19,23 @@ import java.net.URL;
 
 public class HttpUtils {
 
+    @Value("${auth.client.id}")
+    private static String CLIENT_ID;
+
+    @Value("${auth.client.secret}")
+    private static String CLIENT_SECRET;
+
     private HttpUtils() {
     }
 
     public static String sendHttpRequest(String url, String resource) {
+        int responseCode = HttpURLConnection.HTTP_OK;
         try {
             URL requestUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
             connection.setRequestMethod("GET");
 
-            int responseCode = connection.getResponseCode();
+            responseCode = connection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 throw new IOException("Request sending error. Response status: " + responseCode);
             }
@@ -40,7 +51,7 @@ public class HttpUtils {
             connection.disconnect();
             return response.toString();
         } catch (IOException e) {
-            throw new SendingUrlRequestException(resource);
+            throw new SendingUrlRequestException(resource, responseCode, e);
         }
     }
 }

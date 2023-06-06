@@ -6,30 +6,51 @@ package com.bereznev.vacancies.service;
  */
 
 import com.bereznev.vacancies.entity.Vacancy;
-import com.bereznev.vacancies.model.Response;
+import com.bereznev.vacancies.model.json_response.VacancyResponse;
 import com.bereznev.vacancies.utils.HttpUtils;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @Log4j
 
 @Service
 public class VacancyServiceImpl implements VacancyService {
-    private final String VACANCY_API_URL = "https://api.hh.ru/vacancies";
+    private static final String VACANCY_API_URL = "https://api.hh.ru/vacancies";
     private List<Vacancy> convertJsonVacanciesToList(String jsonResponse) {
         Gson gson = new Gson();
-        Response response = gson.fromJson(jsonResponse, Response.class);
-        return response.getItems();
+        VacancyResponse vacancyResponse = gson.fromJson(jsonResponse, VacancyResponse.class);
+        return vacancyResponse.getItems();
     }
 
-    // Todo обрабатывается только 1 страница
+    private int countPagesNumber(String vacancyName) {
+        String response = HttpUtils.sendHttpRequest( VACANCY_API_URL + "?text=" + vacancyName,
+                "VacancyServiceImpl (countPagesNumber)");
+        return new JSONObject(response).getInt("pages");
+    }
+
+    // TODO: количество страниц в цикле
     @Override
     public List<Vacancy> getVacanciesByName(String vacancyName) {
+        vacancyName = vacancyName.trim();
+//        int pagesNumber = countPagesNumber(vacancyName);
+//        List<Vacancy> vacancies = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            String response = HttpUtils.sendHttpRequest( VACANCY_API_URL + "?text=" + vacancyName + "&page=" + i,
+//                    "VacancyServiceImpl (getVacanciesByName)");
+//            vacancies.addAll(convertJsonVacanciesToList(response));
+//
+//            try {
+//                Thread.sleep(5000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//        return vacancies;
+
         String response = HttpUtils.sendHttpRequest( VACANCY_API_URL + "?text=" + vacancyName,
                 "VacancyServiceImpl (getVacanciesByName)");
         return convertJsonVacanciesToList(response);

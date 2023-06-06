@@ -5,18 +5,15 @@ package com.bereznev.vacancies.controller;
     =====================================
  */
 
-import com.bereznev.vacancies.entity.Employer;
+import com.bereznev.vacancies.exception.SendingUrlRequestException;
+import com.bereznev.vacancies.model.json_response.ErrorResponse;
 import com.bereznev.vacancies.service.EmployerService;
-import com.bereznev.vacancies.service.VacancyService;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Log4j
 @RestController
@@ -31,7 +28,18 @@ public class EmployerController {
     }
 
     @GetMapping
-    public ResponseEntity<Set<Employer>> getEmployersByVacancy(@RequestParam("text") String vacancyName) {
-        return new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName), HttpStatus.OK);
+    public ResponseEntity<?> getEmployersByVacancy(@RequestParam("vacancy") String vacancyName) {
+        try {
+            return new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName), HttpStatus.OK);
+        } catch (SendingUrlRequestException exception) {
+            ErrorResponse response = new ErrorResponse(
+                    LocalDateTime.now(),
+                    exception.getResponseCode(),
+                    exception.getException().getMessage(),
+                    "/api/v1/employers?vacancy=" + vacancyName,
+                    exception.getResourceName()
+            );
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
+        }
     }
 }

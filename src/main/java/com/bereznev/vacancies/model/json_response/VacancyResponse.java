@@ -1,4 +1,4 @@
-package com.bereznev.vacancies.model;
+package com.bereznev.vacancies.model.json_response;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
@@ -13,6 +13,6 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class Response {
+public class VacancyResponse {
     private List<Vacancy> items;
 }

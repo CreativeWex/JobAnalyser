@@ -7,6 +7,7 @@ package com.bereznev.vacancies.service;
 
 import com.bereznev.vacancies.entity.Employer;
 import com.bereznev.vacancies.entity.Vacancy;
+import com.bereznev.vacancies.model.json_response.EmployerResponse;
 import com.bereznev.vacancies.utils.HttpUtils;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
@@ -21,7 +22,7 @@ import java.util.Set;
 @Service
 public class EmployerServiceImpl implements EmployerService{
     private final VacancyService vacancyService;
-    private final String EMPLOYERS_API_URL = "https://api.hh.ru/employers/";
+    private static final String EMPLOYERS_API_URL = "https://api.hh.ru/employers/";
 
     @Autowired
     public EmployerServiceImpl(VacancyService vacancyService) {
@@ -42,12 +43,12 @@ public class EmployerServiceImpl implements EmployerService{
     }
 
     @Override
-    public Set<Employer> getEmployersByVacancy(String vacancyName) {
+    public EmployerResponse getEmployersByVacancy(String vacancyName) {
         List<Vacancy> vacancies = vacancyService.getVacanciesByName(vacancyName);
         Set<Employer> employers = new HashSet<>();
         for (Vacancy vacancy : vacancies) {
             employers.add(getById(vacancy.getEmployer().getId()));
         }
-        return employers;
+        return new EmployerResponse(vacancyName, employers.size(), employers);
     }
 }
