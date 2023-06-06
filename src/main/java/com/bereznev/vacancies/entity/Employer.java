@@ -5,7 +5,6 @@ package com.bereznev.vacancies.entity;
     =====================================
  */
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.NoArgsConstructor;

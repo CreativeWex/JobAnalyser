@@ -38,6 +38,7 @@ public class EmployerServiceImpl implements EmployerService{
         JSONObject areaObject = jsonObject.getJSONObject("area");
         String areaName = areaObject.getString("name");
         employer.setLocation(areaName);
+        employer.setDescription(employer.getDescription().replaceAll("\\<.*?\\>", ""));
 
         return employer;
     }
