@@ -41,14 +41,31 @@ public class VacanciesController {
             } else {
                 return new ResponseEntity<>(vacancyService.getVacanciesByName(vacancyName), HttpStatus.OK);
             }
-        } catch (SendingUrlRequestException e) {
+        } catch (Exception e) {
             ErrorDTO errorDTO = new ErrorDTO();
-            errorDTO.setResponseCode(e.getResponseCode());
             errorDTO.setEndpoint("/api/v1/vacancies");
             errorDTO.setTimestamp(LocalDateTime.now());
             errorDTO.setExceptionMessage(e.getMessage());
-            errorDTO.setResourceName(e.getResourceName());
-            return new ResponseEntity<>(errorDTO, HttpStatus.OK);
+            return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/salary_statistics")
+    public ResponseEntity<?> calculateSalaryStatistics(
+            @RequestParam(value = "vacancy") String vacancyName,
+            @RequestParam(value = "location", required = false) Optional<String> location) {
+        try {
+            if (location.isPresent()) {
+                return null; //TODO
+            } else {
+                return new ResponseEntity<>(vacancyService.calculateMinMaxAvgSalary(vacancyName), HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            ErrorDTO errorDTO = new ErrorDTO();
+            errorDTO.setEndpoint("/api/v1/vacancies");
+            errorDTO.setTimestamp(LocalDateTime.now());
+            errorDTO.setExceptionMessage(e.getMessage());
+            return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

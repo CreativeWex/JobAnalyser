@@ -5,6 +5,7 @@ package com.bereznev.service;
     =====================================
  */
 
+import com.bereznev.dto.vacancies.SalaryDTO;
 import com.bereznev.model.Employer;
 import com.bereznev.model.Vacancy;
 
@@ -14,5 +15,5 @@ public interface VacancyService {
     public List<Vacancy> getVacanciesByName(String vacancyName);
     public Vacancy getById(long vacancyId);
 
-    public double calculateAvgSalary(String vacancyName);
+    public SalaryDTO calculateMinMaxAvgSalary(String vacancyName);
 }

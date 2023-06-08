@@ -5,17 +5,16 @@ package com.bereznev.utils;
     =====================================
  */
 
-import com.bereznev.exception.SendingUrlRequestException;
-import org.springframework.boot.web.server.Http2;
+import com.bereznev.dto.ErrorDTO;
+import lombok.extern.log4j.Log4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
+@Log4j
 public class HttpUtils {
 
     private HttpUtils() {
@@ -43,8 +42,11 @@ public class HttpUtils {
             bufferedReader.close();
             connection.disconnect();
             return response.toString();
-        } catch (Exception e) {
-            throw new SendingUrlRequestException(resource, responseCode, e);
+        } catch (IOException e) { //FIXME
+            ErrorDTO.responseCode = responseCode;
+            ErrorDTO.resourceName = resource;
+            log.error(e.getMessage());
+            return "";
         }
     }
 }

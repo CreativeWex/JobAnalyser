@@ -24,7 +24,7 @@ public class ErrorDTO {
     private LocalDateTime timestamp;
 
     @JsonProperty("status")
-    private int responseCode;
+    public static int responseCode;
 
     @JsonProperty("description")
     private String exceptionMessage;
@@ -33,5 +33,5 @@ public class ErrorDTO {
     private String endpoint;
 
     @JsonProperty("evoked from")
-    private String resourceName;
+    public static String resourceName;
 }

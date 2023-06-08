@@ -41,13 +41,11 @@ public class EmployerController {
             } else {
                 return new ResponseEntity<>(employerService.getAll(), HttpStatus.OK);
             }
-        } catch (SendingUrlRequestException e) {
+        } catch (Exception e) {
             ErrorDTO errorDTO = new ErrorDTO();
-            errorDTO.setResponseCode(e.getResponseCode());
             errorDTO.setEndpoint("/api/v1/employers");
             errorDTO.setTimestamp(LocalDateTime.now());
             errorDTO.setExceptionMessage(e.getMessage());
-            errorDTO.setResourceName(e.getResourceName());
             return new ResponseEntity<>(errorDTO, HttpStatus.OK);
         }
     }

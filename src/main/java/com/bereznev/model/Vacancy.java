@@ -5,6 +5,7 @@ package com.bereznev.model;
     =====================================
  */
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
@@ -21,13 +22,21 @@ public class Vacancy {
 
     private String name;
 
+    private String description;
+
     @SerializedName("alternate_url")
     private String url;
 
     private Salary salary;
 
-    @SerializedName("experience")
+    @JsonProperty("work experience")
     private String experienceAmount;
+
+    @JsonProperty("schedule")
+    private String workSchedule;
+
+    @JsonProperty("employment")
+    private String workEmployment;
 
     private Employer employer;
 }

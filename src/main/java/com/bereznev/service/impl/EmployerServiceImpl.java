@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -25,8 +26,10 @@ import java.util.Set;
 @Log4j
 @Service
 public class EmployerServiceImpl implements EmployerService {
-    private final VacancyService vacancyService;
+
     private static final String EMPLOYERS_API_URL = "https://api.hh.ru/employers";
+
+    private final VacancyService vacancyService;
 
     @Autowired
     public EmployerServiceImpl(VacancyService vacancyService) {

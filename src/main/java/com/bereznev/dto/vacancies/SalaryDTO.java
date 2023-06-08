@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 
 public class SalaryDTO {
 
+    private String currency;
+
     private double lowestLimit;
 
     private Vacancy lowestSalaryVacancy;
