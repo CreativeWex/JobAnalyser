@@ -1,4 +1,4 @@
-package com.bereznev.mapper;
+package com.bereznev.dto.vacancies;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
@@ -10,12 +10,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 
-public class VacanciesMapper {
-    private List<Vacancy> items;
+public class SalaryDTO {
+
+    private double lowestLimit;
+
+    private Vacancy lowestSalaryVacancy;
+
+    private double highestLimit;
+
+    private Vacancy highestSalaryVacancy;
+
+    private double avgValue;
 }

@@ -1,4 +1,4 @@
-package com.bereznev.dto;
+package com.bereznev.dto.employers;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex

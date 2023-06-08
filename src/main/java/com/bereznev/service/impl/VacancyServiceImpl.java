@@ -5,6 +5,7 @@ package com.bereznev.service.impl;
     =====================================
  */
 
+import com.bereznev.model.Salary;
 import com.bereznev.model.Vacancy;
 import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.service.VacancyService;
@@ -14,6 +15,7 @@ import lombok.extern.log4j.Log4j;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Log4j
@@ -21,10 +23,41 @@ import java.util.List;
 @Service
 public class VacancyServiceImpl implements VacancyService {
     private static final String VACANCY_API_URL = "https://api.hh.ru/vacancies";
+
+    @Override
+    public Vacancy getById(long vacancyId) {
+        String response = HttpUtils.sendHttpRequest(VACANCY_API_URL+ "/" + vacancyId,
+                "VacancyServiceImpl (getById)");
+        return convertJsonVacancyToObject(response);
+    }
+
     private List<Vacancy> convertJsonVacanciesToList(String jsonResponse) {
         Gson gson = new Gson();
-        VacanciesMapper vacanciesMapper = gson.fromJson(jsonResponse, VacanciesMapper.class);
-        return vacanciesMapper.getItems();
+        List<Vacancy> incompleteInfoVacancies = gson.fromJson(jsonResponse, VacanciesMapper.class).getItems();
+        List<Vacancy> filledInfoVacancies = new ArrayList<>();
+        for (int i = 0; i < incompleteInfoVacancies.size(); i++) {
+            filledInfoVacancies.add(getById(incompleteInfoVacancies.get(i).getId()));
+        }
+
+        return filledInfoVacancies;
+    }
+
+    private Vacancy convertJsonVacancyToObject(String jsonResponse) {
+        Gson gson = new Gson();
+        JSONObject jsonObject = new JSONObject(jsonResponse);
+        Vacancy vacancy = gson.fromJson(jsonResponse, Vacancy.class);
+
+        jsonObject.optInt("from");
+        jsonObject.optInt("to");
+        jsonObject.optString("currency");
+
+        JSONObject experienceJson = jsonObject.optJSONObject("experience");
+        if (experienceJson != null) {
+            vacancy.setExperienceAmount(experienceJson.optString("name"));
+        }
+
+
+        return vacancy;
     }
 
     private int countPagesNumber(String vacancyName) {
@@ -36,7 +69,7 @@ public class VacancyServiceImpl implements VacancyService {
     // TODO: количество страниц в цикле
     @Override
     public List<Vacancy> getVacanciesByName(String vacancyName) {
-        vacancyName = vacancyName.trim().replaceAll(" ","+");
+        vacancyName = vacancyName.trim().replace(" ","+");
 //        int pagesNumber = countPagesNumber(vacancyName);
 //        List<Vacancy> vacancies = new ArrayList<>();
 //        for (int i = 0; i < 5; i++) {
@@ -55,5 +88,14 @@ public class VacancyServiceImpl implements VacancyService {
         String response = HttpUtils.sendHttpRequest( VACANCY_API_URL + "?text=" + vacancyName,
                 "VacancyServiceImpl (getVacanciesByName)");
         return convertJsonVacanciesToList(response);
+    }
+
+    @Override
+    public double calculateAvgSalary(String vacancyName) {
+        List<Vacancy> vacancies = getVacanciesByName(vacancyName);
+        for (int i = 0; i < vacancies.size(); i++) {
+
+        }
+        return 0;
     }
 }

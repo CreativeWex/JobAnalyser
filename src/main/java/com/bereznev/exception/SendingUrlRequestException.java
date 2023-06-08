@@ -14,9 +14,9 @@ public class SendingUrlRequestException extends RuntimeException {
 
     private final String resourceName;
     private final int responseCode;
-    private final IOException exception;
+    private final Exception exception;
 
-    public SendingUrlRequestException(String resourceName, int responseCode, IOException exception) {
+    public SendingUrlRequestException(String resourceName, int responseCode, Exception exception) {
         super(String.format("%s: failed to send http request'", resourceName));
         this.resourceName = resourceName;
         this.responseCode = responseCode;

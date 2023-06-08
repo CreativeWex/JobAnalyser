@@ -6,11 +6,14 @@ package com.bereznev.utils;
  */
 
 import com.bereznev.exception.SendingUrlRequestException;
+import org.springframework.boot.web.server.Http2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 public class HttpUtils {
@@ -19,7 +22,7 @@ public class HttpUtils {
     }
 
     public static String sendHttpRequest(String url, String resource) {
-        int responseCode = HttpURLConnection.HTTP_OK;
+        int responseCode = 500;
         try {
             URL requestUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
@@ -40,7 +43,7 @@ public class HttpUtils {
             bufferedReader.close();
             connection.disconnect();
             return response.toString();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SendingUrlRequestException(resource, responseCode, e);
         }
     }
