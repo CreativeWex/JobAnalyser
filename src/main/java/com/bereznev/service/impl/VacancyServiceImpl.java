@@ -5,7 +5,6 @@ package com.bereznev.service.impl;
     =====================================
  */
 
-import com.bereznev.dto.vacancies.SalaryDTO;
 import com.bereznev.model.Vacancy;
 import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.service.VacancyService;

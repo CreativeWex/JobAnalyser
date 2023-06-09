@@ -5,12 +5,12 @@ package com.bereznev.service;
     =====================================
  */
 
-import com.bereznev.dto.vacancies.SalaryDTO;
+import com.bereznev.dto.SalaryDTO;
 
 public interface SalaryService {
 
-    public SalaryDTO getSalaryStatistics(String vacancyName);
+    public SalaryDTO getSalaryStatistics(String vacancyName); //TODO: баг при 2 и более словах
 
-    public SalaryDTO getSalaryStatisticsByLocation(String vacancyName, String location);
+    public SalaryDTO getSalaryStatisticsByLocation(String vacancyName, String location); //TODO: баг при 2 и более словах
 
 }

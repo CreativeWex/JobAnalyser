@@ -5,7 +5,7 @@ package com.bereznev.service.impl;
     =====================================
  */
 
-import com.bereznev.dto.employers.EmployerDTO;
+import com.bereznev.dto.EmployerDTO;
 import com.bereznev.mapper.EmployersMapper;
 import com.bereznev.service.EmployerService;
 import com.bereznev.service.VacancyService;
@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;

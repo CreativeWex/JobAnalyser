@@ -5,8 +5,6 @@ package com.bereznev.service;
     =====================================
  */
 
-import com.bereznev.dto.vacancies.SalaryDTO;
-import com.bereznev.model.Employer;
 import com.bereznev.model.Vacancy;
 
 import java.util.List;

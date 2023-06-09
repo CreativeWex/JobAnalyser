@@ -6,7 +6,7 @@ package com.bereznev.service;
  */
 
 import com.bereznev.model.Employer;
-import com.bereznev.dto.employers.EmployerDTO;
+import com.bereznev.dto.EmployerDTO;
 
 public interface EmployerService {
 

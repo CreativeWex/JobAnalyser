@@ -5,7 +5,7 @@ package com.bereznev.service.impl;
     =====================================
  */
 
-import com.bereznev.dto.vacancies.SalaryDTO;
+import com.bereznev.dto.SalaryDTO;
 import com.bereznev.model.Vacancy;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
@@ -49,11 +49,11 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     public SalaryDTO calculateMinMaxAvgValues(List<Vacancy> vacancies) {
-        BigDecimal lowestLimit = BigDecimal.TEN.pow(10);
-        BigDecimal highestLimit = BigDecimal.ZERO;
-        BigDecimal middlePriceSum = BigDecimal.ZERO;
-        Vacancy lowestSalaryVacancy = null;
-        Vacancy highestSalaryVacancy = null;
+        BigDecimal minimalSalaryLimit = BigDecimal.TEN.pow(10);
+        BigDecimal maximumSalaryLimit = BigDecimal.ZERO;
+        BigDecimal middleForkValue = BigDecimal.ZERO;
+        Vacancy lowestPaidVacancy = null;
+        Vacancy highestPaidVacancy = null;
         int iterationNumber = 0;
 
         for (Vacancy vacancy : vacancies) {
@@ -67,23 +67,24 @@ public class SalaryServiceImpl implements SalaryService {
             BigDecimal finishPrice = vacancy.getSalary().getTo();
             BigDecimal middlePrice = startPrice.add(finishPrice).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
 
-            if (lowestLimit.compareTo(startPrice) > 0) {
-                lowestLimit = startPrice;
-                lowestSalaryVacancy = vacancy;
+            if (minimalSalaryLimit.compareTo(startPrice) > 0) {
+                minimalSalaryLimit = startPrice;
+                lowestPaidVacancy = vacancy;
             }
-            if (highestLimit.compareTo(finishPrice) < 0) {
-                highestLimit = finishPrice;
-                highestSalaryVacancy = vacancy;
+            if (maximumSalaryLimit.compareTo(finishPrice) < 0) {
+                maximumSalaryLimit = finishPrice;
+                highestPaidVacancy = vacancy;
             }
-            middlePriceSum = middlePriceSum.add(middlePrice);
+            middleForkValue = middleForkValue.add(middlePrice);
             iterationNumber++;
         }
-        BigDecimal avgValue;
+        BigDecimal averageValue;
         if (iterationNumber == 0) {
-            avgValue = BigDecimal.ZERO;
+            averageValue = BigDecimal.ZERO;
         } else {
-            avgValue = middlePriceSum.divide(BigDecimal.valueOf(iterationNumber), RoundingMode.HALF_UP);
+            averageValue = middleForkValue.divide(BigDecimal.valueOf(iterationNumber), RoundingMode.HALF_UP);
         }
-        return new SalaryDTO("RUR", lowestLimit, lowestSalaryVacancy, highestLimit, highestSalaryVacancy, avgValue);
+        return new SalaryDTO("RUR", iterationNumber, minimalSalaryLimit, maximumSalaryLimit, averageValue,
+                lowestPaidVacancy, highestPaidVacancy);
     }
 }
