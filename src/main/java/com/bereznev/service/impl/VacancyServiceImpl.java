@@ -6,18 +6,14 @@ package com.bereznev.service.impl;
  */
 
 import com.bereznev.dto.vacancies.SalaryDTO;
-import com.bereznev.model.Salary;
 import com.bereznev.model.Vacancy;
 import com.bereznev.mapper.VacanciesMapper;
-import com.bereznev.service.EmployerService;
 import com.bereznev.service.VacancyService;
 import com.bereznev.utils.CurrencyConverter;
 import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -50,6 +46,12 @@ public class VacancyServiceImpl implements VacancyService {
         JSONObject employmentJson = jsonObject.optJSONObject("employment");
         if (employmentJson != null) {
             vacancy.setWorkEmployment(employmentJson.optString("name"));
+        }
+        if (vacancy.getSalary().getFrom() == null) {
+            vacancy.getSalary().setFrom(BigDecimal.ZERO);
+        }
+        if (vacancy.getSalary().getTo() == null) {
+            vacancy.getSalary().setTo(BigDecimal.ZERO);
         }
         vacancy.setDescription(vacancy.getDescription().replaceAll("\\<.*?\\>", ""));
         return vacancy;
@@ -103,13 +105,6 @@ public class VacancyServiceImpl implements VacancyService {
         return convertJsonVacanciesToList(response);
     }
 
-    private void convertCurrency(Vacancy vacancy) {
-        // узнать, чему равно значние vacancy.getSalary().getCurrency(), например, оно может быть "BYR", "KZT", "USD" и прочие валюты;
-        // double convertedStartPrice = переконвертировать vacancy.getSalary().getFrom() из представленной в поле currency валюты в ваплюту RUR;
-        // double convertedFinishPrice = переконвертировать vacancy.getSalary().getTo() из представленной в поле currency валюты в ваплюту RUR;
-//        vacancy.setSalary(new Salary(convertedStartPrice, convertedFinishPrice, "RUR"));
-    }
-
     @Override
     public SalaryDTO calculateMinMaxAvgSalary(String vacancyName) {
         BigDecimal lowestLimit = new BigDecimal(Integer.MAX_VALUE);
@@ -119,12 +114,6 @@ public class VacancyServiceImpl implements VacancyService {
         Vacancy highestSalaryVacancy = new Vacancy();
         List<Vacancy> vacancies = getVacanciesByName(vacancyName);
         for (Vacancy vacancy : vacancies) {
-            if (vacancy.getSalary().getFrom() == null) {
-                vacancy.getSalary().setFrom(BigDecimal.ZERO);
-            }
-            if (vacancy.getSalary().getTo() == null) {
-                vacancy.getSalary().setTo(BigDecimal.ZERO);
-            }
             if (!vacancy.getSalary().getCurrency().equals("RUR")) {
                 if (vacancy.getSalary().getCurrency().equals("BYR")) {
                     vacancy.getSalary().setCurrency("BYN");
