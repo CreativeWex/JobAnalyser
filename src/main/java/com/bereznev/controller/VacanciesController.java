@@ -6,7 +6,7 @@ package com.bereznev.controller;
  */
 
 import com.bereznev.dto.ErrorDTO;
-import com.bereznev.exception.SendingUrlRequestException;
+import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
@@ -25,10 +25,12 @@ import java.util.Optional;
 public class VacanciesController {
 
     private final VacancyService vacancyService;
+    private final SalaryService salaryService;
 
-    public VacanciesController(VacancyService vacancyService) {
+    public VacanciesController(VacancyService vacancyService, SalaryService salaryService) {
         super();
         this.vacancyService = vacancyService;
+        this.salaryService = salaryService;
     }
 
     @GetMapping
@@ -56,10 +58,9 @@ public class VacanciesController {
             @RequestParam(value = "location", required = false) Optional<String> location) {
         try {
             if (location.isPresent()) {
-                return new ResponseEntity<>(vacancyService.calculateMinMaxAvgSalaryByArea(vacancyName, location.get()), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(vacancyService.calculateMinMaxAvgSalary(vacancyName), HttpStatus.OK);
+                return new ResponseEntity<>(salaryService.getSalaryStatisticsByLocation(vacancyName, location.get()), HttpStatus.OK);
             }
+            return new ResponseEntity<>(salaryService.getSalaryStatistics(vacancyName), HttpStatus.OK);
         } catch (Exception e) {
             ErrorDTO errorDTO = new ErrorDTO();
             errorDTO.setEndpoint("/api/v1/vacancies");

@@ -9,7 +9,6 @@ import com.bereznev.dto.vacancies.SalaryDTO;
 import com.bereznev.model.Vacancy;
 import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.service.VacancyService;
-import com.bereznev.utils.CurrencyConverter;
 import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Log4j
-
 @Service
 public class VacancyServiceImpl implements VacancyService {
     private static final String VACANCY_API_URL = "https://api.hh.ru/vacancies";
@@ -109,79 +107,4 @@ public class VacancyServiceImpl implements VacancyService {
         return convertJsonVacanciesToList(response);
     }
 
-    @Override
-    public SalaryDTO calculateMinMaxAvgSalary(String vacancyName) {
-        BigDecimal lowestLimit = new BigDecimal(Integer.MAX_VALUE);
-        BigDecimal highestLimit = new BigDecimal(Integer.MIN_VALUE);
-        BigDecimal middlePriceSum = BigDecimal.ZERO;
-        Vacancy lowestSalaryVacancy = new Vacancy();
-        Vacancy highestSalaryVacancy = new Vacancy();
-        List<Vacancy> vacancies = getVacanciesByName(vacancyName);
-        for (Vacancy vacancy : vacancies) {
-            if (!vacancy.getSalary().getCurrency().equals("RUR")) {
-                if (vacancy.getSalary().getCurrency().equals("BYR")) {
-                    vacancy.getSalary().setCurrency("BYN");
-                }
-                CurrencyConverter.convertCurrency(vacancy);
-            }
-            BigDecimal startPrice = vacancy.getSalary().getFrom();
-            BigDecimal finishPrice = vacancy.getSalary().getTo();
-            BigDecimal middlePrice = startPrice.add(finishPrice).divide(BigDecimal.valueOf(2));
-
-            if (lowestLimit.compareTo(startPrice) > 0) {
-                lowestLimit = startPrice;
-                lowestSalaryVacancy = vacancy;
-            }
-            if (highestLimit.compareTo(finishPrice) < 0) {
-                highestLimit = finishPrice;
-                highestSalaryVacancy = vacancy;
-            }
-            middlePriceSum = middlePriceSum.add(middlePrice);
-        }
-        return new SalaryDTO("RUR", lowestLimit, lowestSalaryVacancy, highestLimit, highestSalaryVacancy, middlePriceSum.divide(BigDecimal.valueOf(vacancies.size())));
-    }
-
-    // TODO
-    @Override
-    public SalaryDTO calculateMinMaxAvgSalaryByArea(String vacancyName, String location) {
-        BigDecimal lowestLimit = new BigDecimal(Integer.MAX_VALUE);
-        BigDecimal highestLimit = new BigDecimal(Integer.MIN_VALUE);
-        BigDecimal middlePriceSum = BigDecimal.ZERO;
-        Vacancy lowestSalaryVacancy = new Vacancy();
-        Vacancy highestSalaryVacancy = new Vacancy();
-        List<Vacancy> vacancies = getVacanciesByName(vacancyName);
-        int approvedVacanciesNumber = 0;
-        for (Vacancy vacancy : vacancies) {
-            if (!vacancy.getLocation().equals(location)) {
-                continue;
-            }
-            approvedVacanciesNumber++;
-            if (!vacancy.getSalary().getCurrency().equals("RUR")) {
-                if (vacancy.getSalary().getCurrency().equals("BYR")) {
-                    vacancy.getSalary().setCurrency("BYN");
-                }
-                CurrencyConverter.convertCurrency(vacancy);
-            }
-            BigDecimal startPrice = vacancy.getSalary().getFrom();
-            BigDecimal finishPrice = vacancy.getSalary().getTo();
-            BigDecimal middlePrice = startPrice.add(finishPrice).divide(BigDecimal.valueOf(2));
-
-            if (lowestLimit.compareTo(startPrice) > 0) {
-                lowestLimit = startPrice;
-                lowestSalaryVacancy = vacancy;
-            }
-            if (highestLimit.compareTo(finishPrice) < 0) {
-                highestLimit = finishPrice;
-                highestSalaryVacancy = vacancy;
-            }
-            middlePriceSum = middlePriceSum.add(middlePrice);
-        }
-        BigDecimal avgValue;
-        if (approvedVacanciesNumber == 0) {
-            avgValue = BigDecimal.ZERO;
-        } else {
-            avgValue = middlePriceSum.divide(BigDecimal.valueOf(approvedVacanciesNumber));
-        }
-        return new SalaryDTO("RUR", lowestLimit, lowestSalaryVacancy, highestLimit, highestSalaryVacancy, avgValue);
-    }
 }
