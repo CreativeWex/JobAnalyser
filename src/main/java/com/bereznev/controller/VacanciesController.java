@@ -56,7 +56,7 @@ public class VacanciesController {
             @RequestParam(value = "location", required = false) Optional<String> location) {
         try {
             if (location.isPresent()) {
-                return null; //TODO
+                return new ResponseEntity<>(vacancyService.calculateMinMaxAvgSalaryByArea(vacancyName, location.get()), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(vacancyService.calculateMinMaxAvgSalary(vacancyName), HttpStatus.OK);
             }

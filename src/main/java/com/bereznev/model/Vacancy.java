@@ -38,6 +38,8 @@ public class Vacancy {
     @JsonProperty("employment")
     private String workEmployment;
 
+    private String location;
+
     private Employer employer;
 }
 

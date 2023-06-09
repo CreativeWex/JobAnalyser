@@ -35,6 +35,10 @@ public class VacancyServiceImpl implements VacancyService {
         jsonObject.optInt("to");
         jsonObject.optString("currency");
 
+        JSONObject locationJson = jsonObject.optJSONObject("area");
+        if (locationJson != null) {
+            vacancy.setLocation(locationJson.optString("name"));
+        }
         JSONObject experienceJson = jsonObject.optJSONObject("experience");
         if (experienceJson != null) {
             vacancy.setExperienceAmount(experienceJson.optString("name"));
@@ -135,5 +139,49 @@ public class VacancyServiceImpl implements VacancyService {
             middlePriceSum = middlePriceSum.add(middlePrice);
         }
         return new SalaryDTO("RUR", lowestLimit, lowestSalaryVacancy, highestLimit, highestSalaryVacancy, middlePriceSum.divide(BigDecimal.valueOf(vacancies.size())));
+    }
+
+    // TODO
+    @Override
+    public SalaryDTO calculateMinMaxAvgSalaryByArea(String vacancyName, String location) {
+        BigDecimal lowestLimit = new BigDecimal(Integer.MAX_VALUE);
+        BigDecimal highestLimit = new BigDecimal(Integer.MIN_VALUE);
+        BigDecimal middlePriceSum = BigDecimal.ZERO;
+        Vacancy lowestSalaryVacancy = new Vacancy();
+        Vacancy highestSalaryVacancy = new Vacancy();
+        List<Vacancy> vacancies = getVacanciesByName(vacancyName);
+        int approvedVacanciesNumber = 0;
+        for (Vacancy vacancy : vacancies) {
+            if (!vacancy.getLocation().equals(location)) {
+                continue;
+            }
+            approvedVacanciesNumber++;
+            if (!vacancy.getSalary().getCurrency().equals("RUR")) {
+                if (vacancy.getSalary().getCurrency().equals("BYR")) {
+                    vacancy.getSalary().setCurrency("BYN");
+                }
+                CurrencyConverter.convertCurrency(vacancy);
+            }
+            BigDecimal startPrice = vacancy.getSalary().getFrom();
+            BigDecimal finishPrice = vacancy.getSalary().getTo();
+            BigDecimal middlePrice = startPrice.add(finishPrice).divide(BigDecimal.valueOf(2));
+
+            if (lowestLimit.compareTo(startPrice) > 0) {
+                lowestLimit = startPrice;
+                lowestSalaryVacancy = vacancy;
+            }
+            if (highestLimit.compareTo(finishPrice) < 0) {
+                highestLimit = finishPrice;
+                highestSalaryVacancy = vacancy;
+            }
+            middlePriceSum = middlePriceSum.add(middlePrice);
+        }
+        BigDecimal avgValue;
+        if (approvedVacanciesNumber == 0) {
+            avgValue = BigDecimal.ZERO;
+        } else {
+            avgValue = middlePriceSum.divide(BigDecimal.valueOf(approvedVacanciesNumber));
+        }
+        return new SalaryDTO("RUR", lowestLimit, lowestSalaryVacancy, highestLimit, highestSalaryVacancy, avgValue);
     }
 }
