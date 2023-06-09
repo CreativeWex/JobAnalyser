@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,13 +20,13 @@ public class SalaryDTO {
 
     private String currency;
 
-    private double lowestLimit;
+    private BigDecimal lowestLimit;
 
     private Vacancy lowestSalaryVacancy;
 
-    private double highestLimit;
+    private BigDecimal highestLimit;
 
     private Vacancy highestSalaryVacancy;
 
-    private double avgValue;
+    private BigDecimal avgValue;
 }

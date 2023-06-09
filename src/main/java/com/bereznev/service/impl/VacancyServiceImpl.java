@@ -11,6 +11,7 @@ import com.bereznev.model.Vacancy;
 import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.service.EmployerService;
 import com.bereznev.service.VacancyService;
+import com.bereznev.utils.CurrencyConverter;
 import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,26 +112,39 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public SalaryDTO calculateMinMaxAvgSalary(String vacancyName) {
-        double lowestLimit = Double.MAX_VALUE;
-        double highestLimit = Double.MIN_VALUE;
-        double middlePriceSum = 0;
+        BigDecimal lowestLimit = new BigDecimal(Integer.MAX_VALUE);
+        BigDecimal highestLimit = new BigDecimal(Integer.MIN_VALUE);
+        BigDecimal middlePriceSum = BigDecimal.ZERO;
         Vacancy lowestSalaryVacancy = new Vacancy();
         Vacancy highestSalaryVacancy = new Vacancy();
         List<Vacancy> vacancies = getVacanciesByName(vacancyName);
         for (Vacancy vacancy : vacancies) {
-            double startPrice = vacancy.getSalary().getFrom();
-            double finishPrice = vacancy.getSalary().getTo();
-            double middlePrice = (startPrice + finishPrice) / 2;
-            if (lowestLimit > startPrice) {
+            if (vacancy.getSalary().getFrom() == null) {
+                vacancy.getSalary().setFrom(BigDecimal.ZERO);
+            }
+            if (vacancy.getSalary().getTo() == null) {
+                vacancy.getSalary().setTo(BigDecimal.ZERO);
+            }
+            if (!vacancy.getSalary().getCurrency().equals("RUR")) {
+                if (vacancy.getSalary().getCurrency().equals("BYR")) {
+                    vacancy.getSalary().setCurrency("BYN");
+                }
+                CurrencyConverter.convertCurrency(vacancy);
+            }
+            BigDecimal startPrice = vacancy.getSalary().getFrom();
+            BigDecimal finishPrice = vacancy.getSalary().getTo();
+            BigDecimal middlePrice = startPrice.add(finishPrice).divide(BigDecimal.valueOf(2));
+
+            if (lowestLimit.compareTo(startPrice) > 0) {
                 lowestLimit = startPrice;
                 lowestSalaryVacancy = vacancy;
             }
-            if (highestLimit < finishPrice) {
+            if (highestLimit.compareTo(finishPrice) < 0) {
                 highestLimit = finishPrice;
                 highestSalaryVacancy = vacancy;
             }
-            middlePriceSum += middlePrice;
+            middlePriceSum = middlePriceSum.add(middlePrice);
         }
-        return new SalaryDTO("RUR", lowestLimit, lowestSalaryVacancy, highestLimit, highestSalaryVacancy, middlePriceSum / vacancies.size());
+        return new SalaryDTO("RUR", lowestLimit, lowestSalaryVacancy, highestLimit, highestSalaryVacancy, middlePriceSum.divide(BigDecimal.valueOf(vacancies.size())));
     }
 }
