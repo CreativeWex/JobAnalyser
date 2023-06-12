@@ -5,6 +5,7 @@ package com.bereznev.service.impl;
     =====================================
  */
 
+import com.bereznev.model.Salary;
 import com.bereznev.model.Vacancy;
 import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.service.VacancyService;
@@ -21,16 +22,13 @@ import java.util.List;
 @Log4j
 @Service
 public class VacancyServiceImpl implements VacancyService {
+
     private static final String VACANCY_API_URL = "https://api.hh.ru/vacancies";
 
     private Vacancy convertJsonVacancyToObject(String jsonResponse) {
         Gson gson = new Gson();
         JSONObject jsonObject = new JSONObject(jsonResponse);
         Vacancy vacancy = gson.fromJson(jsonResponse, Vacancy.class);
-
-        jsonObject.optInt("from");
-        jsonObject.optInt("to");
-        jsonObject.optString("currency");
 
         JSONObject locationJson = jsonObject.optJSONObject("area");
         if (locationJson != null) {
@@ -48,13 +46,19 @@ public class VacancyServiceImpl implements VacancyService {
         if (employmentJson != null) {
             vacancy.setWorkEmployment(employmentJson.optString("name"));
         }
-        if (vacancy.getSalary().getFrom() == null) {
-            vacancy.getSalary().setFrom(BigDecimal.ZERO);
+        JSONObject salaryJson = jsonObject.optJSONObject("salary");
+        Salary salary = new Salary(BigDecimal.ZERO, BigDecimal.ZERO, "RUR");
+        if (salaryJson != null) {
+            salary = new Salary(
+                salaryJson.optBigDecimal("from", BigDecimal.ZERO),
+                salaryJson.optBigDecimal("to", BigDecimal.ZERO),
+                salaryJson.optString("currency", "RUR")
+            );
         }
-        if (vacancy.getSalary().getTo() == null) {
-            vacancy.getSalary().setTo(BigDecimal.ZERO);
-        }
-        vacancy.setDescription(vacancy.getDescription().replaceAll("\\<.*?\\>", ""));
+        vacancy.setSalary(salary);
+        vacancy.setDescription(vacancy.getDescription()
+                .replaceAll("\\<.*?\\>", "")
+                .replace("&quot;", "\"")); //FIXME
         return vacancy;
     }
     @Override
@@ -71,7 +75,6 @@ public class VacancyServiceImpl implements VacancyService {
         for (int i = 0; i < incompleteInfoVacancies.size(); i++) {
             filledInfoVacancies.add(getById(incompleteInfoVacancies.get(i).getId()));
         }
-
         return filledInfoVacancies;
     }
 

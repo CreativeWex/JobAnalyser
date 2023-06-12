@@ -6,13 +6,16 @@ package com.bereznev.utils;
  */
 
 import com.bereznev.dto.ErrorDTO;
+import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 
 @Log4j
 public class HttpUtils {
@@ -26,7 +29,6 @@ public class HttpUtils {
             URL requestUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
             connection.setRequestMethod("GET");
-
             responseCode = connection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 throw new IOException("Request sending error. Response status: " + responseCode);
@@ -38,15 +40,16 @@ public class HttpUtils {
             while ((inputLine = bufferedReader.readLine()) != null) {
                 response.append(inputLine);
             }
-
             bufferedReader.close();
             connection.disconnect();
             return response.toString();
-        } catch (IOException e) { //FIXME
-            ErrorDTO.responseCode = responseCode;
-            ErrorDTO.resourceName = resource;
-            log.error(e.getMessage());
-            return "";
+        } catch (IOException e) {
+            ErrorDTO errorDTO = new ErrorDTO();
+            errorDTO.setEndpoint(url);
+            errorDTO.setTimestamp(LocalDateTime.now());
+            errorDTO.setExceptionMessage(e.getMessage());
+            log.debug(errorDTO);
+            return new Gson().toJson(errorDTO);
         }
     }
 }

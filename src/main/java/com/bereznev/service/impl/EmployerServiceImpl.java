@@ -68,7 +68,7 @@ public class EmployerServiceImpl implements EmployerService {
                 "EmployerServiceImpl (getAll())");
         List<Employer> employers = convertJsonEmployersToList(response);
         employers.replaceAll(employer -> getById(employer.getId()));
-        return new EmployerDTO(employers.size(), new HashSet<>(employers));
+        return new EmployerDTO(null, employers.size(), new HashSet<>(employers));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class EmployerServiceImpl implements EmployerService {
             }
             employers.add(getById(vacancy.getEmployer().getId()));
         }
-        return new EmployerDTO(employers.size(), employers);
+        return new EmployerDTO(vacancyName, employers.size(), employers);
     }
 
     @Override
@@ -98,6 +98,6 @@ public class EmployerServiceImpl implements EmployerService {
             }
             employers.add(employer);
         }
-        return new EmployerDTO(employers.size(), employers);
+        return new EmployerDTO(null, employers.size(), employers);
     }
 }

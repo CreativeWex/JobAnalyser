@@ -57,7 +57,7 @@ public class SalaryServiceImpl implements SalaryService {
         int iterationNumber = 0;
 
         for (Vacancy vacancy : vacancies) {
-            if (!vacancy.getSalary().getCurrency().equals("RUR")) {
+             if (!vacancy.getSalary().getCurrency().equals("RUR")) {
                 if (vacancy.getSalary().getCurrency().equals("BYR")) {
                     vacancy.getSalary().setCurrency("BYN");
                 }

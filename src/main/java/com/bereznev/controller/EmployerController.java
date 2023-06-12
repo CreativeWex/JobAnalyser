@@ -5,7 +5,6 @@ package com.bereznev.controller;
     =====================================
  */
 
-import com.bereznev.exception.SendingUrlRequestException;
 import com.bereznev.dto.ErrorDTO;
 import com.bereznev.service.EmployerService;
 import lombok.extern.log4j.Log4j;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 

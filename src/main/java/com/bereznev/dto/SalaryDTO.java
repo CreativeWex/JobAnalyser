@@ -38,5 +38,4 @@ public class SalaryDTO {
 
     @JsonProperty("highest salary limit")
     private Vacancy highestPaidVacancy;
-
 }

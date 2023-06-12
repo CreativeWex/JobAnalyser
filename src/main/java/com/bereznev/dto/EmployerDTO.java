@@ -16,7 +16,11 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class EmployerDTO {
+
+    @JsonProperty("sorted by vacancy")
+    private String vacancyFilter;
 
     @JsonProperty("found")
     private int employersNumber;

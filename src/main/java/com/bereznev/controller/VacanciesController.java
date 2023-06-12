@@ -41,6 +41,7 @@ public class VacanciesController {
             if (location.isPresent()) {
                 return null; //TODO
             } else {
+                log.debug("getAll"); //Fixme
                 return new ResponseEntity<>(vacancyService.getVacanciesByName(vacancyName), HttpStatus.OK);
             }
         } catch (Exception e) {
