@@ -63,8 +63,8 @@ public class SalaryServiceImpl implements SalaryService {
                 }
                 CurrencyConverter.convertCurrency(vacancy);
             }
-            BigDecimal startPrice = vacancy.getSalary().getFrom();
-            BigDecimal finishPrice = vacancy.getSalary().getTo();
+            BigDecimal startPrice = vacancy.getSalary().getMinimalAmount();
+            BigDecimal finishPrice = vacancy.getSalary().getMaximumAmount();
             BigDecimal middlePrice = startPrice.add(finishPrice).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
 
             if (minimalSalaryLimit.compareTo(startPrice) > 0) {

@@ -6,7 +6,9 @@ package com.bereznev.service.impl;
  */
 
 import com.bereznev.dto.EmployerDTO;
+import com.bereznev.exception.AlreadyExistsException;
 import com.bereznev.mapper.EmployersMapper;
+import com.bereznev.repository.EmployerRepository;
 import com.bereznev.service.EmployerService;
 import com.bereznev.service.VacancyService;
 import com.bereznev.utils.HttpUtils;
@@ -27,11 +29,15 @@ import java.util.Set;
 public class EmployerServiceImpl implements EmployerService {
 
     private static final String EMPLOYERS_API_URL = "https://api.hh.ru/employers";
+    private static final String RESOURCE_NAME = "Employer";
+
+    private final EmployerRepository employerRepository;
 
     private final VacancyService vacancyService;
 
     @Autowired
-    public EmployerServiceImpl(VacancyService vacancyService) {
+    public EmployerServiceImpl(EmployerRepository employerRepository, VacancyService vacancyService) {
+        this.employerRepository = employerRepository;
         this.vacancyService = vacancyService;
     }
 
@@ -60,6 +66,16 @@ public class EmployerServiceImpl implements EmployerService {
         String response = HttpUtils.sendHttpRequest(EMPLOYERS_API_URL+ "/" + employerId,
                 "EmployerServiceImpl (getById)");
         return convertJsonEmployerToObject(response);
+    }
+
+    @Override
+    public Employer save(Employer employer) {
+        String name = employer.getName();
+//        if (employerRepository.findEmployerByName(name).isPresent()) {
+//            throw new AlreadyExistsException(RESOURCE_NAME, "name", name);
+//        }
+        log.debug("saved: " + employer);
+        return employerRepository.save(employer);
     }
 
     @Override

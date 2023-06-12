@@ -26,8 +26,8 @@ public class CurrencyConverter {
 
     public static void convertCurrency(Vacancy vacancy) {
         String currencyCode = vacancy.getSalary().getCurrency();
-        BigDecimal startPrice = vacancy.getSalary().getFrom();
-        BigDecimal finishPrice = vacancy.getSalary().getTo();
+        BigDecimal startPrice = vacancy.getSalary().getMinimalAmount();
+        BigDecimal finishPrice = vacancy.getSalary().getMaximumAmount();
         BigDecimal rate = BigDecimal.valueOf(getCurrencyRate(currencyCode));
         BigDecimal convertedStartPrice = startPrice.multiply(rate).setScale(2, RoundingMode.HALF_UP);
         BigDecimal convertedFinishPrice = finishPrice.multiply(rate).setScale(2, RoundingMode.HALF_UP);
