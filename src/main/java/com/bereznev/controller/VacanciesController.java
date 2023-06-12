@@ -53,7 +53,7 @@ public class VacanciesController {
     }
 
     @GetMapping("/salary_statistics")
-    public ResponseEntity<?> getSalaryStatistics(
+        public ResponseEntity<?> getSalaryStatistics(
             @RequestParam(value = "vacancy") String vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
         try {
