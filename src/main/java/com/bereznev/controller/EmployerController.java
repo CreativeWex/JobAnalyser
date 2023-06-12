@@ -5,7 +5,6 @@ package com.bereznev.controller;
     =====================================
  */
 
-import com.bereznev.exception.SendingUrlRequestException;
 import com.bereznev.dto.ErrorDTO;
 import com.bereznev.service.EmployerService;
 import lombok.extern.log4j.Log4j;
@@ -28,29 +27,24 @@ public class EmployerController {
         this.employerService = employerService;
     }
 
-// TODO: рефакторинг
-
     @GetMapping
-    public ResponseEntity<?> getEmployersByVacancy(
+    public ResponseEntity<?> getAll(
             @RequestParam(value = "vacancy", required = false) Optional<String> vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
         try {
-            if (vacancyName.isPresent() && location.isEmpty()) {
-                return new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName.get()), HttpStatus.OK);
-            } else if (vacancyName.isPresent() && location.isPresent()) {
-                return new ResponseEntity<>(employerService.getEmployersByVacancy(vacancyName.get(), location.get()), HttpStatus.OK);
+            if (vacancyName.isPresent() && location.isPresent()) {
+                return new ResponseEntity<>(employerService.getAllFilteredByVacancyAndLocation(vacancyName.get(), location.get()), HttpStatus.OK);
+            } else if (vacancyName.isPresent()) {
+                return new ResponseEntity<>(employerService.getAllFilteredByVacancy(vacancyName.get()), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(employerService.getAll(), HttpStatus.OK);
             }
-        } catch (SendingUrlRequestException exception) {
-            ErrorDTO response = new ErrorDTO(
-                    LocalDateTime.now(),
-                    exception.getResponseCode(),
-                    exception.getException().getMessage(),
-                    "/api/v1/employers?vacancy=" + vacancyName,
-                    exception.getResourceName()
-            );
-            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
+        } catch (Exception e) {
+            ErrorDTO errorDTO = new ErrorDTO();
+            errorDTO.setEndpoint("/api/v1/employers");
+            errorDTO.setTimestamp(LocalDateTime.now());
+            errorDTO.setExceptionMessage(e.getMessage());
+            return new ResponseEntity<>(errorDTO, HttpStatus.OK);
         }
     }
 }

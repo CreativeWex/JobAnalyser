@@ -6,6 +6,7 @@ package com.bereznev.dto;
  */
 
 import com.bereznev.model.Employer;
+import com.bereznev.model.Vacancy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,15 +17,11 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class EmployerDTO {
-
-    @JsonProperty("sorted by vacancy")
-    private String vacancyFilter;
+public class VacancyDTO {
 
     @JsonProperty("found")
-    private int employersNumber;
+    private int vacanciesNumber;
 
     @JsonProperty("items")
-    private Set<Employer> employers;
+    private Set<Vacancy> vacancies;
 }

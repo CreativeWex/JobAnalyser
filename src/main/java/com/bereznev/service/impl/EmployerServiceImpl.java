@@ -25,8 +25,10 @@ import java.util.Set;
 @Log4j
 @Service
 public class EmployerServiceImpl implements EmployerService {
-    private final VacancyService vacancyService;
+
     private static final String EMPLOYERS_API_URL = "https://api.hh.ru/employers";
+
+    private final VacancyService vacancyService;
 
     @Autowired
     public EmployerServiceImpl(VacancyService vacancyService) {
@@ -66,11 +68,11 @@ public class EmployerServiceImpl implements EmployerService {
                 "EmployerServiceImpl (getAll())");
         List<Employer> employers = convertJsonEmployersToList(response);
         employers.replaceAll(employer -> getById(employer.getId()));
-        return new EmployerDTO(employers.size(), new HashSet<>(employers));
+        return new EmployerDTO(null, employers.size(), new HashSet<>(employers));
     }
 
     @Override
-    public EmployerDTO getEmployersByVacancy(String vacancyName) {
+    public EmployerDTO getAllFilteredByVacancy(String vacancyName) {
         List<Vacancy> vacancies = vacancyService.getVacanciesByName(vacancyName);
         Set<Employer> employers = new HashSet<>();
         for (Vacancy vacancy : vacancies) {
@@ -79,11 +81,11 @@ public class EmployerServiceImpl implements EmployerService {
             }
             employers.add(getById(vacancy.getEmployer().getId()));
         }
-        return new EmployerDTO(employers.size(), employers);
+        return new EmployerDTO(vacancyName, employers.size(), employers);
     }
 
     @Override
-    public EmployerDTO getEmployersByVacancy(String vacancyName, String location) {
+    public EmployerDTO getAllFilteredByVacancyAndLocation(String vacancyName, String location) {
         List<Vacancy> vacancies = vacancyService.getVacanciesByName(vacancyName);
         Set<Employer> employers = new HashSet<>();
         for (Vacancy vacancy : vacancies) {
@@ -96,6 +98,6 @@ public class EmployerServiceImpl implements EmployerService {
             }
             employers.add(employer);
         }
-        return new EmployerDTO(employers.size(), employers);
+        return new EmployerDTO(null, employers.size(), employers);
     }
 }
