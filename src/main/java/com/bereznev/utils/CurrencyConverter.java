@@ -5,8 +5,8 @@ package com.bereznev.utils;
     =====================================
  */
 
-import com.bereznev.model.Salary;
-import com.bereznev.model.Vacancy;
+import com.bereznev.entity.Salary;
+import com.bereznev.entity.Vacancy;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

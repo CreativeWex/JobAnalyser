@@ -32,6 +32,6 @@ public class ErrorDTO {
     @JsonProperty("path")
     private String endpoint;
 
-    @JsonProperty("evoked from")
+    @JsonProperty("evoked_from")
     public static String resourceName;
 }

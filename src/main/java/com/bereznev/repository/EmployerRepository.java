@@ -5,20 +5,22 @@ package com.bereznev.repository;
     =====================================
  */
 
-import com.bereznev.model.Employer;
+import com.bereznev.entity.Employer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface EmployerRepository extends JpaRepository<Employer, Long> {
-    @Query("select e from Employer e where e.name = ?1 and e.location=?2")
-    Optional<Employer> findEmployerByNameAnAndLocation(String name, String location);
 
     @Query(value = "delete from employers where id >= 0", nativeQuery = true)
-    void deleteAll();
+    public void deleteAll();
 
-    long count();
+    @Query(value = "SELECT e FROM Employer e JOIN e.vacancies v WHERE v.name LIKE %:vacancyName%")
+    public List<Employer> getAllByVacancyName(String vacancyName);
+
+    @Query(value = "SELECT e FROM Employer e JOIN e.vacancies v WHERE v.name LIKE ?1 and e.location = ?2")
+    public List<Employer> getAllByVacancyNameAndLocation(String vacancyName, String location);
 }

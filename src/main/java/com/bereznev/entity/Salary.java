@@ -1,10 +1,11 @@
-package com.bereznev.model;
+package com.bereznev.entity;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class Salary {
 
     private String currency;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "salary")
     private Vacancy vacancy;
 
@@ -37,16 +39,5 @@ public class Salary {
         this.minimalAmount = minimalAmount;
         this.maximumAmount = maximumAmount;
         this.currency = currency;
-    }
-
-    @Override
-    public String toString() {
-        return "Salary{" +
-                "id=" + id +
-                ", minimalAmount=" + minimalAmount +
-                ", maximumAmount=" + maximumAmount +
-                ", currency='" + currency + '\'' +
-                ", vacancy_id=" + vacancy.getId() +
-                '}';
     }
 }

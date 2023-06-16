@@ -1,10 +1,11 @@
-package com.bereznev.model;
+package com.bereznev.entity;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 import lombok.Data;

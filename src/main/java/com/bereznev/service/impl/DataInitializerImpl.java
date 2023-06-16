@@ -7,9 +7,9 @@ package com.bereznev.service.impl;
 
 import com.bereznev.mapper.EmployersMapper;
 import com.bereznev.mapper.VacanciesMapper;
-import com.bereznev.model.Employer;
-import com.bereznev.model.Salary;
-import com.bereznev.model.Vacancy;
+import com.bereznev.entity.Employer;
+import com.bereznev.entity.Salary;
+import com.bereznev.entity.Vacancy;
 import com.bereznev.service.DataInitializer;
 import com.bereznev.service.EmployerService;
 import com.bereznev.service.SalaryService;
@@ -116,12 +116,6 @@ public class DataInitializerImpl implements DataInitializer {
                 employer.setDescription(description.replaceAll("\\<.*?\\>", ""));
             }
             employer.setOpenVacanciesAmount(jsonObject.optInt("open_vacancies"));
-
-
-            //fixme
-            if (employer.getName().equals("001KZ (001КЗ)")) {
-                log.debug(employer);
-            }
             employerService.save(employer);
             fillVacanciesForEmployer(employer);
         }

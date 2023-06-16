@@ -5,8 +5,7 @@ package com.bereznev.dto;
     =====================================
  */
 
-import com.bereznev.model.Employer;
-import com.bereznev.model.Vacancy;
+import com.bereznev.entity.Vacancy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

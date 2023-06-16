@@ -1,10 +1,11 @@
-package com.bereznev.model;
+package com.bereznev.entity;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
@@ -52,24 +53,9 @@ public class Vacancy {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String location;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id", nullable = false)
     private Employer employer;
-
-    @Override
-    public String toString() {
-        return "Vacancy{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", url='" + url + '\'' +
-                ", salary={ from=" + salary.getMinimalAmount() + ", to=" + salary.getMaximumAmount() + ", currency=" + salary.getCurrency() +
-                ", experienceAmount='" + experienceAmount + '\'' +
-                ", workSchedule='" + workSchedule + '\'' +
-                ", workEmployment='" + workEmployment + '\'' +
-                ", location='" + location + '\'' +
-                ", employer=" + employer +
-                '}';
-    }
 }
 

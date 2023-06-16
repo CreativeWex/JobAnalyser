@@ -5,9 +5,8 @@ package com.bereznev.service.impl;
     =====================================
  */
 
-import com.bereznev.exception.AlreadyExistsException;
-import com.bereznev.model.Salary;
-import com.bereznev.model.Vacancy;
+import com.bereznev.entity.Salary;
+import com.bereznev.entity.Vacancy;
 import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.repository.VacancyRepository;
 import com.bereznev.service.VacancyService;
@@ -96,10 +95,6 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public Vacancy save(Vacancy vacancy) {
-//        if (vacancyRepository.findVacanciesByNameAndLocationAndEmployerId(vacancy.getName(), vacancy.getLocation(),
-//                vacancy.getEmployer().getId()).isPresent()) {
-//            throw new AlreadyExistsException(RESOURCE_NAME, "name / employer", vacancy.getName() + " / " + vacancy.getEmployer());
-//        }
         return vacancyRepository.save(vacancy);
     }
 

@@ -6,10 +6,8 @@ package com.bereznev.service.impl;
  */
 
 import com.bereznev.dto.SalaryDTO;
-import com.bereznev.exception.AlreadyExistsException;
-import com.bereznev.model.Employer;
-import com.bereznev.model.Salary;
-import com.bereznev.model.Vacancy;
+import com.bereznev.entity.Salary;
+import com.bereznev.entity.Vacancy;
 import com.bereznev.repository.SalaryRepository;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;

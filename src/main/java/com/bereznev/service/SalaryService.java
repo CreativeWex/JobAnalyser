@@ -6,8 +6,7 @@ package com.bereznev.service;
  */
 
 import com.bereznev.dto.SalaryDTO;
-import com.bereznev.model.Employer;
-import com.bereznev.model.Salary;
+import com.bereznev.entity.Salary;
 
 import java.util.List;
 

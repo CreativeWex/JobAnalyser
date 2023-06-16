@@ -5,7 +5,7 @@ package com.bereznev.mapper;
     =====================================
  */
 
-import com.bereznev.model.Employer;
+import com.bereznev.entity.Employer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

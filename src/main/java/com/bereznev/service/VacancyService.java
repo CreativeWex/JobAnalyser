@@ -5,7 +5,7 @@ package com.bereznev.service;
     =====================================
  */
 
-import com.bereznev.model.Vacancy;
+import com.bereznev.entity.Vacancy;
 
 import java.util.List;
 

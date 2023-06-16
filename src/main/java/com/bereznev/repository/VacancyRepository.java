@@ -5,8 +5,7 @@ package com.bereznev.repository;
     =====================================
  */
 
-import com.bereznev.model.Employer;
-import com.bereznev.model.Vacancy;
+import com.bereznev.entity.Vacancy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
