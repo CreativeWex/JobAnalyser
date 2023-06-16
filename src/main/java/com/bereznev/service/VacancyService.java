@@ -14,4 +14,11 @@ public interface VacancyService {
     public List<Vacancy> getVacanciesByName(String vacancyName);
 
     public Vacancy getById(long vacancyId);
+
+    public void saveAll(List<Vacancy> vacancies);
+
+    public void deleteAll();
+
+    public Vacancy save(Vacancy vacancy);
+    public long countDatabaseLinesAmount();
 }

@@ -23,7 +23,7 @@ public class Vacancy {
     @Id
     private long id;
 
-    @Column(nullable = false, unique = true, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String name;
 
     @Column(columnDefinition = "TEXT")
@@ -33,7 +33,7 @@ public class Vacancy {
     @Column(columnDefinition = "TEXT")
     private String url;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "salary_id")
     private Salary salary;
 
@@ -55,5 +55,21 @@ public class Vacancy {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id", nullable = false)
     private Employer employer;
+
+    @Override
+    public String toString() {
+        return "Vacancy{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", url='" + url + '\'' +
+                ", salary={ from=" + salary.getMinimalAmount() + ", to=" + salary.getMaximumAmount() + ", currency=" + salary.getCurrency() +
+                ", experienceAmount='" + experienceAmount + '\'' +
+                ", workSchedule='" + workSchedule + '\'' +
+                ", workEmployment='" + workEmployment + '\'' +
+                ", location='" + location + '\'' +
+                ", employer=" + employer +
+                '}';
+    }
 }
 

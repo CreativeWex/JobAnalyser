@@ -6,7 +6,11 @@ package com.bereznev.service.impl;
  */
 
 import com.bereznev.dto.SalaryDTO;
+import com.bereznev.exception.AlreadyExistsException;
+import com.bereznev.model.Employer;
+import com.bereznev.model.Salary;
 import com.bereznev.model.Vacancy;
+import com.bereznev.repository.SalaryRepository;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
 import com.bereznev.utils.CurrencyConverter;
@@ -24,10 +28,12 @@ import java.util.List;
 public class SalaryServiceImpl implements SalaryService {
 
     private final VacancyService vacancyService;
+    private final SalaryRepository salaryRepository;
 
     @Autowired
-    public SalaryServiceImpl(VacancyService vacancyService) {
+    public SalaryServiceImpl(VacancyService vacancyService, SalaryRepository salaryRepository) {
         this.vacancyService = vacancyService;
+        this.salaryRepository = salaryRepository;
     }
 
     @Override
@@ -46,6 +52,31 @@ public class SalaryServiceImpl implements SalaryService {
             }
         }
         return calculateMinMaxAvgValues(approvedVacancies);
+    }
+
+    @Override
+    public void deleteAll() {
+        try {
+            salaryRepository.deleteAll();
+            log.debug("All salaries data deleted");
+        } catch (Exception e) {
+            log.error("Error deleting salaries data: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Salary save(Salary salary) {
+        return salaryRepository.save(salary);
+    }
+
+    @Override
+    public long countDatabaseLinesAmount() {
+        return salaryRepository.count();
+    }
+
+    @Override
+    public void saveAll(List<Salary> salaries) {
+        salaryRepository.saveAll(salaries);
     }
 
     public SalaryDTO calculateMinMaxAvgValues(List<Vacancy> vacancies) {

@@ -6,9 +6,11 @@ package com.bereznev.exception;
  */
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+@Log4j
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
 public class AlreadyExistsException extends RuntimeException {
@@ -22,5 +24,6 @@ public class AlreadyExistsException extends RuntimeException {
         this.resourceName = resourceName;
         this.fieldName = fieldName;
         this.fieldValue = fieldValue;
+        log.error(String.format("%s already exists with %s : '%s'", resourceName, fieldName, fieldValue));
     }
 }

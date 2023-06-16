@@ -38,4 +38,15 @@ public class Salary {
         this.maximumAmount = maximumAmount;
         this.currency = currency;
     }
+
+    @Override
+    public String toString() {
+        return "Salary{" +
+                "id=" + id +
+                ", minimalAmount=" + minimalAmount +
+                ", maximumAmount=" + maximumAmount +
+                ", currency='" + currency + '\'' +
+                ", vacancy_id=" + vacancy.getId() +
+                '}';
+    }
 }

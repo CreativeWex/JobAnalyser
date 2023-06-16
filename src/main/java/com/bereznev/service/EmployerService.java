@@ -7,6 +7,9 @@ package com.bereznev.service;
 
 import com.bereznev.model.Employer;
 import com.bereznev.dto.EmployerDTO;
+import com.bereznev.model.Vacancy;
+
+import java.util.List;
 
 public interface EmployerService {
 
@@ -16,6 +19,12 @@ public interface EmployerService {
     public Employer getById(long employerId);
 
     public Employer save(Employer employer);
+
+    public void saveAll(List<Employer> employers);
+
+    public void deleteAll();
+
+    public long countDatabaseLinesAmount();
 
 //    public List<Employer> getEmployersByRegion(String region);
 //    public List<Employer> getEmployersWithOpenVacancies();

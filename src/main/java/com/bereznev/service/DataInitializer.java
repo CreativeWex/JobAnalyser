@@ -5,7 +5,9 @@ package com.bereznev.service;
     =====================================
  */
 
-public interface DatabaseService {
-    public void initData();
+import java.util.Optional;
+
+public interface DataInitializer {
+    public void initData(Optional<String> vacancyName);
     public void deleteAllData();
 }

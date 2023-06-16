@@ -41,6 +41,21 @@ public class EmployerServiceImpl implements EmployerService {
         this.vacancyService = vacancyService;
     }
 
+    @Override
+    public void deleteAll() {
+        try {
+            employerRepository.deleteAll();
+            log.debug("All employers data deleted");
+        } catch (Exception e) {
+            log.error("Error deleting employers data: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public long countDatabaseLinesAmount() {
+        return employerRepository.count();
+    }
+
     private List<Employer> convertJsonEmployersToList(String jsonResponse) {
         Gson gson = new Gson();
         EmployersMapper employersMapper = gson.fromJson(jsonResponse, EmployersMapper.class);
@@ -70,12 +85,15 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     public Employer save(Employer employer) {
-        String name = employer.getName();
-//        if (employerRepository.findEmployerByName(name).isPresent()) {
-//            throw new AlreadyExistsException(RESOURCE_NAME, "name", name);
+//        if (employerRepository.findEmployerByNameAnAndLocation(employer.getName(), employer.getLocation()).isPresent()) {
+//            throw new AlreadyExistsException(RESOURCE_NAME, "name / location", employer.getName() + " / " + employer.getLocation());
 //        }
-        log.debug("saved: " + employer);
         return employerRepository.save(employer);
+    }
+
+    @Override
+    public void saveAll(List<Employer> employers) {
+        employerRepository.saveAll(employers);
     }
 
     @Override
