@@ -11,7 +11,9 @@ import java.util.List;
 
 public interface VacancyService {
 
-    public List<Vacancy> getVacanciesByName(String vacancyName);
+    public List<Vacancy> getAll();
+    public List<Vacancy> getAllByName(String vacancyName);
+    public List<Vacancy> getAllByNameAndLocation(String vacancyName, String location);
 
     public Vacancy getById(long vacancyId);
 

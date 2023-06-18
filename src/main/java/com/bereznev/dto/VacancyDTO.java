@@ -11,16 +11,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class VacancyDTO {
 
-    @JsonProperty("found")
+    @JsonProperty("filtered_by_name")
+    private String nameFilter = null;
+
+    @JsonProperty("filtered_by_location")
+    private String locationFilter = null;
+
+    @JsonProperty("vacancies_number")
     private int vacanciesNumber;
 
-    @JsonProperty("items")
-    private Set<Vacancy> vacancies;
+    @JsonProperty("vacancies")
+    private List<Vacancy> vacancies;
 }

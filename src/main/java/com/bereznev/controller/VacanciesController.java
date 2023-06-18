@@ -6,6 +6,7 @@ package com.bereznev.controller;
  */
 
 import com.bereznev.dto.ErrorDTO;
+import com.bereznev.dto.VacancyDTO;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
 import lombok.extern.log4j.Log4j;
@@ -35,14 +36,23 @@ public class VacanciesController {
 
     @GetMapping
     public ResponseEntity<?> getAll(
-            @RequestParam(value = "vacancy") String vacancyName,
+            @RequestParam(value = "name", required = false) Optional<String> vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
+        VacancyDTO vacancyDTO = new VacancyDTO();
         try {
-            if (location.isPresent()) {
-                return null; //TODO
+            if (vacancyName.isPresent()) {
+                vacancyDTO.setNameFilter(vacancyName.get());
+                if (location.isPresent()) {
+                    vacancyDTO.setLocationFilter(location.get());
+                    vacancyDTO.setVacancies(vacancyService.getAllByNameAndLocation(vacancyName.get(), location.get()));
+                } else {
+                    vacancyDTO.setVacancies(vacancyService.getAllByName(vacancyName.get()));
+                }
             } else {
-                return new ResponseEntity<>(vacancyService.getVacanciesByName(vacancyName), HttpStatus.OK);
+                vacancyDTO.setVacancies(vacancyService.getAll());
             }
+            vacancyDTO.setVacanciesNumber(vacancyDTO.getVacancies().size());
+            return new ResponseEntity<>(vacancyDTO, HttpStatus.OK);
         } catch (Exception e) {
             ErrorDTO errorDTO = new ErrorDTO();
             errorDTO.setEndpoint("/api/v1/vacancies");
@@ -54,7 +64,7 @@ public class VacanciesController {
 
     @GetMapping("/salary_statistics")
         public ResponseEntity<?> getSalaryStatistics(
-            @RequestParam(value = "vacancy") String vacancyName,
+            @RequestParam(value = "name") String vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
         try {
             if (location.isPresent()) {

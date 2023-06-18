@@ -5,7 +5,7 @@ package com.bereznev.service.impl;
     =====================================
  */
 
-import com.bereznev.exception.NotFoundException;
+import com.bereznev.exception.ResourceNotFoundException;
 import com.bereznev.repository.EmployerRepository;
 import com.bereznev.service.EmployerService;
 import com.bereznev.entity.Employer;
@@ -18,8 +18,6 @@ import java.util.List;
 @Log4j
 @Service
 public class EmployerServiceImpl implements EmployerService {
-
-    private static final String EMPLOYERS_API_URL = "https://api.hh.ru/employers";
 
     private final EmployerRepository employerRepository;
 
@@ -48,7 +46,7 @@ public class EmployerServiceImpl implements EmployerService {
         if (employerRepository.findById(employerId).isPresent()) {
             return employerRepository.findById(employerId).get();
         } else {
-            throw new NotFoundException("Employer", "id", employerId);
+            throw new ResourceNotFoundException("Employer", "id", employerId);
         }
     }
 

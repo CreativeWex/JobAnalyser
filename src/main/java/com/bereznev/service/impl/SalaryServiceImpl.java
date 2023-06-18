@@ -36,13 +36,13 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     public SalaryDTO getSalaryStatistics(String vacancyName) {
-        List<Vacancy> vacancies = vacancyService.getVacanciesByName(vacancyName);
+        List<Vacancy> vacancies = vacancyService.getAllByName(vacancyName);
         return calculateMinMaxAvgValues(vacancies);
     }
 
     @Override
     public SalaryDTO getSalaryStatisticsByLocation(String vacancyName, String location) {
-        List<Vacancy> vacancies = vacancyService.getVacanciesByName(vacancyName);
+        List<Vacancy> vacancies = vacancyService.getAllByName(vacancyName);
         List<Vacancy> approvedVacancies = new ArrayList<>();
         for (Vacancy vacancy : vacancies) {
             if (vacancy.getLocation().equals(location)) {

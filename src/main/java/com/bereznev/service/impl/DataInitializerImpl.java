@@ -71,6 +71,10 @@ public class DataInitializerImpl implements DataInitializer {
         if (employmentJson != null) {
             vacancy.setWorkEmployment(employmentJson.optString("name"));
         }
+        JSONObject addressJson = jsonObject.optJSONObject("address");
+        if (addressJson != null) {
+            vacancy.setFullAddress(addressJson.optString("raw"));
+        }
         JSONObject salaryJson = jsonObject.optJSONObject("salary");
         Salary salary = new Salary(BigDecimal.ZERO, BigDecimal.ZERO, "RUR");
         if (salaryJson != null) {

@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,9 +55,18 @@ public class Vacancy {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String location;
 
+    @JsonProperty("full_address")
+    @Column(columnDefinition = "TEXT")
+    public String fullAddress;
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id", nullable = false)
     private Employer employer;
+
+//    @ElementCollection
+//    @CollectionTable(name = "key_skills", joinColumns = @JoinColumn(name = "vacancy_id"))
+//    @Column(name = "key_skills")
+//    private List<String> keySkills;
 }
 

@@ -10,16 +10,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
+    @Query(value = "select v from Vacancy v where v.name LIKE %?1% and v.location LIKE %?2%")
+    public List<Vacancy> getAllByNameAndLocation(String vacancyName, String location);
+    @Query(value = "select v from Vacancy v where v.name LIKE %?1%")
+    public List<Vacancy> getAllByName(String vacancyName);
 
     @Query(value = "delete from vacancies where id >= 0", nativeQuery = true)
-    void deleteAll();
+    public void deleteAll();
 
-    @Query("select v from Vacancy v where v.name = ?1 and v.location = ?2 and v.employer.id = ?3")
-    Optional<Vacancy> findVacanciesByNameAndLocationAndEmployerId(String name, String location, long employerId);
-
-    long count();
+    public long count();
 }

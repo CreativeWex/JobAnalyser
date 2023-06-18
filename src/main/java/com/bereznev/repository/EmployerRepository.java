@@ -21,6 +21,6 @@ public interface EmployerRepository extends JpaRepository<Employer, Long> {
     @Query(value = "SELECT e FROM Employer e JOIN e.vacancies v WHERE v.name LIKE %:vacancyName%")
     public List<Employer> getAllByVacancyName(String vacancyName);
 
-    @Query(value = "SELECT e FROM Employer e JOIN e.vacancies v WHERE v.name LIKE ?1 and e.location = ?2")
+    @Query(value = "SELECT e FROM Employer e JOIN e.vacancies v WHERE v.name LIKE %?1% and e.location = ?2")
     public List<Employer> getAllByVacancyNameAndLocation(String vacancyName, String location);
 }
