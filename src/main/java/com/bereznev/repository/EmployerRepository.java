@@ -14,7 +14,6 @@ import java.util.List;
 
 @Repository
 public interface EmployerRepository extends JpaRepository<Employer, Long> {
-
     @Query(value = "delete from employers where id >= 0", nativeQuery = true)
     public void deleteAll();
 

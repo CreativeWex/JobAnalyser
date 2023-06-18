@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 
 public class ErrorDTO {
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private LocalDateTime timestamp;
 

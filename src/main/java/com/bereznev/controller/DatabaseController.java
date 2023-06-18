@@ -22,7 +22,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/data")
 public class DatabaseController {
-
     private final DataInitializer dataInitializer;
 
     private static final String REFRESH_DESCRIPTION_MESSAGE = "Data refreshed successfully";

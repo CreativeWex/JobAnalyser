@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SalaryRepository extends JpaRepository<Salary, Long> {
-
     @Query(value = "delete from salaries where id >= 0", nativeQuery = true)
     void deleteAll();
 

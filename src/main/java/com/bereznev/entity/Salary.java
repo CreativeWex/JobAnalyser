@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "salaries")
 public class Salary {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

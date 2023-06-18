@@ -16,8 +16,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VacancyDTO {
 
+public class VacancyDTO {
     @JsonProperty("filtered_by_name")
     private String nameFilter = null;
 

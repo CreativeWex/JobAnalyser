@@ -24,7 +24,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/vacancies")
 public class VacanciesController {
-
     private final VacancyService vacancyService;
     private final SalaryService salaryService;
 

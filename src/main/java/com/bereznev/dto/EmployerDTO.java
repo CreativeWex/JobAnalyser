@@ -18,7 +18,6 @@ import java.util.Set;
 @NoArgsConstructor
 
 public class EmployerDTO {
-
     @JsonProperty("sorted_by_vacancy")
     private String vacancyFilter;
 

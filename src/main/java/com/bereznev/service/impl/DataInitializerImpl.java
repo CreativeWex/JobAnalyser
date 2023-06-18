@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +32,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class DataInitializerImpl implements DataInitializer {
-
     private static final String VACANCY_API_URL = "https://api.hh.ru/vacancies";
     private static final String EMPLOYERS_API_URL = "https://api.hh.ru/employers";
 
@@ -83,6 +83,13 @@ public class DataInitializerImpl implements DataInitializer {
                     salaryJson.optBigDecimal("to", BigDecimal.ZERO),
                     salaryJson.optString("currency", "RUR")
             );
+        }
+        String description =  jsonObject.optString("description");
+        if (description != null) {
+            vacancy.setDescription(description.replaceAll("\\<.*?\\>", ""));
+        }
+        if (description != null) {
+            vacancy.setDescription(description.replaceAll("\\<.*?\\>", ""));
         }
         vacancy.setSalary(salary);
         salary.setVacancy(vacancy);

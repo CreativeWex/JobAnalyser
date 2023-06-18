@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
 public class AlreadyExistsException extends RuntimeException {
-
     private final String resourceName;
     private final String fieldName;
     private final Object fieldValue;

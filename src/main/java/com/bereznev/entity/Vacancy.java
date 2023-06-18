@@ -6,6 +6,7 @@ package com.bereznev.entity;
  */
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
@@ -22,7 +23,6 @@ import java.util.List;
 @Entity
 @Table(name = "vacancies")
 public class Vacancy {
-
     @Id
     private long id;
 
@@ -40,7 +40,7 @@ public class Vacancy {
     @JoinColumn(name = "salary_id")
     private Salary salary;
 
-    @JsonProperty("work experience")
+    @JsonProperty("work_experience")
     @Column(name = "experience_amount", nullable = false)
     private String experienceAmount;
 
@@ -63,10 +63,5 @@ public class Vacancy {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id", nullable = false)
     private Employer employer;
-
-//    @ElementCollection
-//    @CollectionTable(name = "key_skills", joinColumns = @JoinColumn(name = "vacancy_id"))
-//    @Column(name = "key_skills")
-//    private List<String> keySkills;
 }
 

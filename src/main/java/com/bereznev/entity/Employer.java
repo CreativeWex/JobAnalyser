@@ -5,21 +5,23 @@ package com.bereznev.entity;
     =====================================
  */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 
 @Entity
 @Table(name = "employers")
 public class Employer {
-
     @Id
     private long id;
 

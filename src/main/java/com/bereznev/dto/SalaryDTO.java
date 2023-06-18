@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 
 public class SalaryDTO {
-
     private String currency;
 
     @JsonProperty("vacancies_found")
