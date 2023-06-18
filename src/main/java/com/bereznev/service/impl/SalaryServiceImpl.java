@@ -18,13 +18,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 
 @Log4j
 @Service
 public class SalaryServiceImpl implements SalaryService {
-
     private final VacancyService vacancyService;
     private final SalaryRepository salaryRepository;
 
@@ -36,20 +34,12 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     public SalaryDTO getSalaryStatistics(String vacancyName) {
-        List<Vacancy> vacancies = vacancyService.getAllByName(vacancyName);
-        return calculateMinMaxAvgValues(vacancies);
+        return calculateMinMaxAvgValues(vacancyService.getAllByName(vacancyName));
     }
 
     @Override
     public SalaryDTO getSalaryStatisticsByLocation(String vacancyName, String location) {
-        List<Vacancy> vacancies = vacancyService.getAllByName(vacancyName);
-        List<Vacancy> approvedVacancies = new ArrayList<>();
-        for (Vacancy vacancy : vacancies) {
-            if (vacancy.getLocation().equals(location)) {
-                approvedVacancies.add(vacancy);
-            }
-        }
-        return calculateMinMaxAvgValues(approvedVacancies);
+        return calculateMinMaxAvgValues(vacancyService.getAllByNameAndLocation(vacancyName, location));
     }
 
     @Override

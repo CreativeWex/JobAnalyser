@@ -6,6 +6,7 @@ package com.bereznev.controller;
  */
 
 import com.bereznev.dto.ErrorDTO;
+import com.bereznev.dto.SalaryDTO;
 import com.bereznev.dto.VacancyDTO;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
@@ -38,6 +39,7 @@ public class VacanciesController {
             @RequestParam(value = "name", required = false) Optional<String> vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
         VacancyDTO vacancyDTO = new VacancyDTO();
+        long startTime = System.currentTimeMillis();
         try {
             if (vacancyName.isPresent()) {
                 vacancyDTO.setNameFilter(vacancyName.get());
@@ -51,8 +53,10 @@ public class VacanciesController {
                 vacancyDTO.setVacancies(vacancyService.getAll());
             }
             vacancyDTO.setVacanciesNumber(vacancyDTO.getVacancies().size());
+            vacancyDTO.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
             return new ResponseEntity<>(vacancyDTO, HttpStatus.OK);
         } catch (Exception e) {
+            log.error(e.getMessage());
             ErrorDTO errorDTO = new ErrorDTO();
             errorDTO.setEndpoint("/api/v1/vacancies");
             errorDTO.setTimestamp(LocalDateTime.now());
@@ -65,14 +69,22 @@ public class VacanciesController {
         public ResponseEntity<?> getSalaryStatistics(
             @RequestParam(value = "name") String vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
+        long startTime = System.currentTimeMillis();
+        SalaryDTO dto;
         try {
             if (location.isPresent()) {
-                return new ResponseEntity<>(salaryService.getSalaryStatisticsByLocation(vacancyName, location.get()), HttpStatus.OK);
+                dto = salaryService.getSalaryStatisticsByLocation(vacancyName, location.get());
+                dto.setLocationFilter(location.get());
+            } else {
+                dto = salaryService.getSalaryStatistics(vacancyName);
             }
-            return new ResponseEntity<>(salaryService.getSalaryStatistics(vacancyName), HttpStatus.OK);
+            dto.setNameFilter(vacancyName);
+            dto.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
+            return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (Exception e) {
+            log.error(e.getMessage());
             ErrorDTO errorDTO = new ErrorDTO();
-            errorDTO.setEndpoint("/api/v1/vacancies");
+            errorDTO.setEndpoint("/api/v1/vacancies/salary_statistics");
             errorDTO.setTimestamp(LocalDateTime.now());
             errorDTO.setExceptionMessage(e.getMessage());
             return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);

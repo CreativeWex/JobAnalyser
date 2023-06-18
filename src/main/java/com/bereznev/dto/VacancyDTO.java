@@ -18,6 +18,9 @@ import java.util.List;
 @NoArgsConstructor
 
 public class VacancyDTO {
+    @JsonProperty("time_spent")
+    private String timeSpent;
+
     @JsonProperty("filtered_by_name")
     private String nameFilter = null;
 

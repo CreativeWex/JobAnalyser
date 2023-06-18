@@ -18,6 +18,16 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 
 public class SalaryDTO {
+    @JsonProperty("time_spent")
+    private String timeSpent;
+
+    @JsonProperty("filtered_by_name")
+    private String nameFilter = null;
+
+    @JsonProperty("filtered_by_location")
+    private String locationFilter = null;
+
+    @JsonProperty("salary_currency")
     private String currency;
 
     @JsonProperty("vacancies_found")
@@ -37,4 +47,15 @@ public class SalaryDTO {
 
     @JsonProperty("highest_salary_limit")
     private Vacancy highestPaidVacancy;
+
+    public SalaryDTO(String currency, int vacanciesFound, BigDecimal minimalSalaryLimit, BigDecimal maximumSalaryLimit,
+                     BigDecimal averageValue, Vacancy lowestPaidVacancy, Vacancy highestPaidVacancy) {
+        this.currency = currency;
+        this.vacanciesFound = vacanciesFound;
+        this.minimalSalaryLimit = minimalSalaryLimit;
+        this.maximumSalaryLimit = maximumSalaryLimit;
+        this.averageValue = averageValue;
+        this.lowestPaidVacancy = lowestPaidVacancy;
+        this.highestPaidVacancy = highestPaidVacancy;
+    }
 }
