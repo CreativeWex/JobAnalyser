@@ -24,14 +24,21 @@ public class CurrencyConverter {
     private CurrencyConverter() {
     }
 
-    public static void convertCurrency(Vacancy vacancy) {
+    public static Vacancy convertCurrency(Vacancy vacancy) {
         String currencyCode = vacancy.getSalary().getCurrency();
+        if (currencyCode.equals("RUR")) {
+            return vacancy;
+        }
+        if (currencyCode.equals("BYR")) {
+            vacancy.getSalary().setCurrency("BYN");
+        }
         BigDecimal startPrice = vacancy.getSalary().getMinimalAmount();
         BigDecimal finishPrice = vacancy.getSalary().getMaximumAmount();
         BigDecimal rate = BigDecimal.valueOf(getCurrencyRate(currencyCode));
         BigDecimal convertedStartPrice = startPrice.multiply(rate).setScale(2, RoundingMode.HALF_UP);
         BigDecimal convertedFinishPrice = finishPrice.multiply(rate).setScale(2, RoundingMode.HALF_UP);
         vacancy.setSalary(new Salary(convertedStartPrice, convertedFinishPrice, "RUR"));
+        return vacancy;
     }
 
     private static double getCurrencyRate(String currencyCode) {

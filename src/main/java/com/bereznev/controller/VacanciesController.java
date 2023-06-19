@@ -25,6 +25,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/vacancies")
 public class VacanciesController {
+    private final static String CONTROLLER_PATH = "/api/v1/vacancies";
+
     private final VacancyService vacancyService;
     private final SalaryService salaryService;
 
@@ -56,12 +58,11 @@ public class VacanciesController {
             vacancyDTO.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
             return new ResponseEntity<>(vacancyDTO, HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
-            ErrorDTO errorDTO = new ErrorDTO();
-            errorDTO.setEndpoint("/api/v1/vacancies");
-            errorDTO.setTimestamp(LocalDateTime.now());
-            errorDTO.setExceptionMessage(e.getMessage());
-            return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorDTO dto = new ErrorDTO();
+            dto.setExceptionMessage(e.getMessage());
+            dto.setLocalDateTime(LocalDateTime.now());
+            dto.setEndpoint(CONTROLLER_PATH);
+            return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -70,24 +71,16 @@ public class VacanciesController {
             @RequestParam(value = "name") String vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
         long startTime = System.currentTimeMillis();
-        SalaryDTO dto;
         try {
-            if (location.isPresent()) {
-                dto = salaryService.getSalaryStatisticsByLocation(vacancyName, location.get());
-                dto.setLocationFilter(location.get());
-            } else {
-                dto = salaryService.getSalaryStatistics(vacancyName);
-            }
-            dto.setNameFilter(vacancyName);
+            SalaryDTO dto = salaryService.getSalaryStatistics(vacancyName, location);
             dto.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
-            ErrorDTO errorDTO = new ErrorDTO();
-            errorDTO.setEndpoint("/api/v1/vacancies/salary_statistics");
-            errorDTO.setTimestamp(LocalDateTime.now());
-            errorDTO.setExceptionMessage(e.getMessage());
-            return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorDTO dto = new ErrorDTO();
+            dto.setExceptionMessage(e.getMessage());
+            dto.setLocalDateTime(LocalDateTime.now());
+            dto.setEndpoint(CONTROLLER_PATH + "/salary_statistics");
+            return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

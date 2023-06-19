@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -31,6 +32,10 @@ public class Vacancy {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @ElementCollection
+    @CollectionTable(name = "vacancy_skills", joinColumns = @JoinColumn(name = "vacancy_id"))
+    private List<String> skills = new ArrayList<>();
 
     @SerializedName("alternate_url")
     @Column(columnDefinition = "TEXT")
@@ -59,6 +64,7 @@ public class Vacancy {
     @Column(columnDefinition = "TEXT")
     public String fullAddress;
 
+    //TODO: поправить отображение работодателей для каждой вакансии
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id", nullable = false)

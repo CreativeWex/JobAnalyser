@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j
 @Service
@@ -33,13 +34,22 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     @Override
-    public SalaryDTO getSalaryStatistics(String vacancyName) {
-        return calculateMinMaxAvgValues(vacancyService.getAllByName(vacancyName));
-    }
-
-    @Override
-    public SalaryDTO getSalaryStatisticsByLocation(String vacancyName, String location) {
-        return calculateMinMaxAvgValues(vacancyService.getAllByNameAndLocation(vacancyName, location));
+    public SalaryDTO getSalaryStatistics(String vacancyName, Optional<String> location) {
+        SalaryDTO dto = new SalaryDTO();
+        dto.setNameFilter(vacancyName);
+        dto.setCurrency("RUR");
+        dto.setHighestPaidVacancy(findHighestPaidVacancy(location));
+        dto.setLowestPaidVacancy(findLowestPaidVacancy(location));
+        dto.setMaximumSalaryLimit(dto.getHighestPaidVacancy().getSalary().getMaximumAmount());
+        dto.setMinimalSalaryLimit(dto.getLowestPaidVacancy().getSalary().getMinimalAmount());
+        dto.setVacanciesFound(vacancyService.getAllByName(vacancyName).size());
+        if (location.isPresent()) {
+            dto.setAverageValue(calculateAverageSalaryValue(vacancyService.getAllByNameAndLocation(vacancyName, location.get())));
+            dto.setLocationFilter(location.get());
+            return dto;
+        }
+        dto.setAverageValue(calculateAverageSalaryValue(vacancyService.getAllByName(vacancyName)));
+        return dto;
     }
 
     @Override
@@ -67,42 +77,34 @@ public class SalaryServiceImpl implements SalaryService {
         salaryRepository.saveAll(salaries);
     }
 
-    public SalaryDTO calculateMinMaxAvgValues(List<Vacancy> vacancies) {
-        BigDecimal minimalSalaryLimit = BigDecimal.TEN.pow(10);
-        BigDecimal maximumSalaryLimit = BigDecimal.ZERO;
-        BigDecimal middleForkValue = BigDecimal.ZERO;
-        Vacancy lowestPaidVacancy = null;
-        Vacancy highestPaidVacancy = null;
-
-        for (Vacancy vacancy : vacancies) {
-             if (!vacancy.getSalary().getCurrency().equals("RUR")) {
-                if (vacancy.getSalary().getCurrency().equals("BYR")) {
-                    vacancy.getSalary().setCurrency("BYN");
-                }
-                CurrencyConverter.convertCurrency(vacancy);
-            }
-            BigDecimal startPrice = vacancy.getSalary().getMinimalAmount();
-            BigDecimal finishPrice = vacancy.getSalary().getMaximumAmount();
-            BigDecimal middlePrice = startPrice.add(finishPrice).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
-
-            if (minimalSalaryLimit.compareTo(startPrice) > 0) {
-                minimalSalaryLimit = startPrice;
-                lowestPaidVacancy = vacancy;
-            }
-            if (maximumSalaryLimit.compareTo(finishPrice) < 0) {
-                maximumSalaryLimit = finishPrice;
-                highestPaidVacancy = vacancy;
-            }
-            middleForkValue = middleForkValue.add(middlePrice);
+    public Vacancy findLowestPaidVacancy(Optional<String> location) {
+        if (location.isPresent()) {
+            Vacancy lowestPaidVacancy = salaryRepository.findFirstVacancyWithMinimalSalaryByLocation(location.get().substring(1));
+            return CurrencyConverter.convertCurrency(lowestPaidVacancy);
         }
-        BigDecimal averageValue;
+        Vacancy lowestPaidVacancy = salaryRepository.findFirstVacancyWithMinimalSalary();
+        return CurrencyConverter.convertCurrency(lowestPaidVacancy);
+    }
+
+    public Vacancy findHighestPaidVacancy(Optional<String> location) {
+        if (location.isPresent()) {
+            Vacancy highestPaidVacancy = salaryRepository.findFirstVacancyWithMaximalSalaryByLocation(location.get().substring(1));
+            return CurrencyConverter.convertCurrency(highestPaidVacancy);
+        }
+        Vacancy highestPaidVacancy = salaryRepository.findFirstVacancyWithMaximalSalary();
+        return CurrencyConverter.convertCurrency(highestPaidVacancy);
+    }
+
+    public BigDecimal calculateAverageSalaryValue(List<Vacancy> vacancies) {
+        BigDecimal averageForkSum = BigDecimal.ZERO;
         if (vacancies.isEmpty()) {
-            averageValue = BigDecimal.ZERO;
-            minimalSalaryLimit = BigDecimal.ZERO;
-        } else {
-            averageValue = middleForkValue.divide(BigDecimal.valueOf(vacancies.size()), RoundingMode.HALF_UP);
+            return BigDecimal.ZERO;
         }
-        return new SalaryDTO("RUR", vacancies.size(), minimalSalaryLimit, maximumSalaryLimit, averageValue,
-                lowestPaidVacancy, highestPaidVacancy);
+        for (Vacancy vacancy : vacancies) {
+            BigDecimal minimalPrice = vacancy.getSalary().getMinimalAmount();
+            BigDecimal maximalPrice = vacancy.getSalary().getMaximumAmount();
+            averageForkSum = averageForkSum.add(minimalPrice.add(maximalPrice).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP));
+        }
+        return averageForkSum.divide(BigDecimal.valueOf(vacancies.size()), RoundingMode.HALF_UP);
     }
 }

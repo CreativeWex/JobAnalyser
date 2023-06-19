@@ -19,11 +19,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 
 public class ErrorDTO {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    private LocalDateTime timestamp;
+    private String status = "error";
 
-    @JsonProperty("status")
-    public static int responseCode;
+    @JsonProperty("date_time")
+    private LocalDateTime localDateTime;
 
     @JsonProperty("description")
     private String exceptionMessage;

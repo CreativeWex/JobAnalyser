@@ -19,6 +19,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/employers")
 public class EmployerController {
+    private final static String CONTROLLER_PATH = "/api/v1/employers";
 
     private final EmployerService employerService;
 
@@ -40,11 +41,11 @@ public class EmployerController {
                 return new ResponseEntity<>(employerService.getAll(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            ErrorDTO errorDTO = new ErrorDTO();
-            errorDTO.setEndpoint("/api/v1/employers");
-            errorDTO.setTimestamp(LocalDateTime.now());
-            errorDTO.setExceptionMessage(e.getMessage());
-            return new ResponseEntity<>(errorDTO, HttpStatus.OK);
+            ErrorDTO dto = new ErrorDTO();
+            dto.setExceptionMessage(e.getMessage());
+            dto.setLocalDateTime(LocalDateTime.now());
+            dto.setEndpoint(CONTROLLER_PATH);
+            return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -43,10 +43,9 @@ public class HttpUtils {
             bufferedReader.close();
             connection.disconnect();
             return response.toString();
-        } catch (IOException e) {
+        } catch (IOException e) { //FIXME
             ErrorDTO errorDTO = new ErrorDTO();
             errorDTO.setEndpoint(url);
-            errorDTO.setTimestamp(LocalDateTime.now());
             errorDTO.setExceptionMessage(e.getMessage());
             log.debug(errorDTO);
             return new Gson().toJson(errorDTO);
