@@ -73,7 +73,6 @@ public class SalaryServiceImpl implements SalaryService {
         BigDecimal middleForkValue = BigDecimal.ZERO;
         Vacancy lowestPaidVacancy = null;
         Vacancy highestPaidVacancy = null;
-        int iterationNumber = 0;
 
         for (Vacancy vacancy : vacancies) {
              if (!vacancy.getSalary().getCurrency().equals("RUR")) {
@@ -95,15 +94,15 @@ public class SalaryServiceImpl implements SalaryService {
                 highestPaidVacancy = vacancy;
             }
             middleForkValue = middleForkValue.add(middlePrice);
-            iterationNumber++;
         }
         BigDecimal averageValue;
-        if (iterationNumber == 0) {
+        if (vacancies.isEmpty()) {
             averageValue = BigDecimal.ZERO;
+            minimalSalaryLimit = BigDecimal.ZERO;
         } else {
-            averageValue = middleForkValue.divide(BigDecimal.valueOf(iterationNumber), RoundingMode.HALF_UP);
+            averageValue = middleForkValue.divide(BigDecimal.valueOf(vacancies.size()), RoundingMode.HALF_UP);
         }
-        return new SalaryDTO("RUR", iterationNumber, minimalSalaryLimit, maximumSalaryLimit, averageValue,
+        return new SalaryDTO("RUR", vacancies.size(), minimalSalaryLimit, maximumSalaryLimit, averageValue,
                 lowestPaidVacancy, highestPaidVacancy);
     }
 }
