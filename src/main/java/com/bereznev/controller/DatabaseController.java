@@ -41,6 +41,7 @@ public class DatabaseController {
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (Exception e) {
             DataInitializerDTO dto = new DataInitializerDTO("error", e.getMessage(), LocalDateTime.now(), System.currentTimeMillis() - startTime + " ms");
+            log.error(dto);
             return new ResponseEntity<>(dto , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -54,6 +55,7 @@ public class DatabaseController {
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (Exception e) {
             DataInitializerDTO dto = new DataInitializerDTO("error", e.getMessage(), LocalDateTime.now(), System.currentTimeMillis() - startTime + " ms");
+            log.error(dto);
             return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

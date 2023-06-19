@@ -6,7 +6,6 @@ package com.bereznev.dto;
  */
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +28,4 @@ public class ErrorDTO {
 
     @JsonProperty("path")
     private String endpoint;
-
-    @JsonProperty("evoked_from")
-    public static String resourceName;
 }

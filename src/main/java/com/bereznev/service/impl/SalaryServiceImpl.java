@@ -8,6 +8,7 @@ package com.bereznev.service.impl;
 import com.bereznev.dto.SalaryDTO;
 import com.bereznev.entity.Salary;
 import com.bereznev.entity.Vacancy;
+import com.bereznev.exception.ResourceNotFoundException;
 import com.bereznev.repository.SalaryRepository;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
@@ -33,13 +34,18 @@ public class SalaryServiceImpl implements SalaryService {
         this.salaryRepository = salaryRepository;
     }
 
+    //FIXME: &location=санкт -  "average_value": 0, &location=казань - "Cannot invoke \"com.bereznev.entity.Vacancy.getSalary()\" because \"vacancy\" is null
     @Override
     public SalaryDTO getSalaryStatistics(String vacancyName, Optional<String> location) {
         SalaryDTO dto = new SalaryDTO();
         dto.setNameFilter(vacancyName);
         dto.setCurrency("RUR");
-        dto.setHighestPaidVacancy(findHighestPaidVacancy(location));
-        dto.setLowestPaidVacancy(findLowestPaidVacancy(location));
+        try {
+            dto.setHighestPaidVacancy(findHighestPaidVacancy(vacancyName.substring(1), location));
+            dto.setLowestPaidVacancy(findLowestPaidVacancy(vacancyName.substring(1), location));
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Vacancies", "vacancyName / location", vacancyName + "/" + location);
+        }
         dto.setMaximumSalaryLimit(dto.getHighestPaidVacancy().getSalary().getMaximumAmount());
         dto.setMinimalSalaryLimit(dto.getLowestPaidVacancy().getSalary().getMinimalAmount());
         dto.setVacanciesFound(vacancyService.getAllByName(vacancyName).size());
@@ -77,21 +83,21 @@ public class SalaryServiceImpl implements SalaryService {
         salaryRepository.saveAll(salaries);
     }
 
-    public Vacancy findLowestPaidVacancy(Optional<String> location) {
+    public Vacancy findLowestPaidVacancy(String vacancyName, Optional<String> location) {
         if (location.isPresent()) {
-            Vacancy lowestPaidVacancy = salaryRepository.findFirstVacancyWithMinimalSalaryByLocation(location.get().substring(1));
+            Vacancy lowestPaidVacancy = salaryRepository.findFirstVacancyWithMinimalSalaryByLocation(vacancyName, location.get().substring(1));
             return CurrencyConverter.convertCurrency(lowestPaidVacancy);
         }
-        Vacancy lowestPaidVacancy = salaryRepository.findFirstVacancyWithMinimalSalary();
+        Vacancy lowestPaidVacancy = salaryRepository.findFirstVacancyWithMinimalSalary(vacancyName);
         return CurrencyConverter.convertCurrency(lowestPaidVacancy);
     }
 
-    public Vacancy findHighestPaidVacancy(Optional<String> location) {
+    public Vacancy findHighestPaidVacancy(String vacancyName, Optional<String> location) {
         if (location.isPresent()) {
-            Vacancy highestPaidVacancy = salaryRepository.findFirstVacancyWithMaximalSalaryByLocation(location.get().substring(1));
+            Vacancy highestPaidVacancy = salaryRepository.findFirstVacancyWithMaximalSalaryByLocation(vacancyName, location.get().substring(1));
             return CurrencyConverter.convertCurrency(highestPaidVacancy);
         }
-        Vacancy highestPaidVacancy = salaryRepository.findFirstVacancyWithMaximalSalary();
+        Vacancy highestPaidVacancy = salaryRepository.findFirstVacancyWithMaximalSalary(vacancyName);
         return CurrencyConverter.convertCurrency(highestPaidVacancy);
     }
 

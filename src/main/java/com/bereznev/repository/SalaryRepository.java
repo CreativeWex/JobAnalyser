@@ -16,17 +16,17 @@ public interface SalaryRepository extends JpaRepository<Salary, Long> {
     @Query(value = "DELETE FROM salaries where id >= 0", nativeQuery = true)
     public void deleteAll();
 
-    @Query("SELECT v FROM Vacancy v WHERE v.salary.minimalAmount > 0 ORDER BY v.salary.minimalAmount ASC")
-    public Vacancy findFirstVacancyWithMinimalSalary();
+    @Query("SELECT v FROM Vacancy v WHERE v.salary.minimalAmount > 0 AND v.name LIKE %?1% ORDER BY v.salary.minimalAmount ASC LIMIT 1")
+    public Vacancy findFirstVacancyWithMinimalSalary(String vacancyName);
 
-    @Query("SELECT v FROM Vacancy v WHERE v.salary.minimalAmount > 0 AND v.location LIKE %?1% ORDER BY v.salary.minimalAmount ASC")
-    public Vacancy findFirstVacancyWithMinimalSalaryByLocation(String location);
+    @Query("SELECT v FROM Vacancy v WHERE v.salary.minimalAmount > 0 AND v.location LIKE %?2%  AND v.name LIKE %?1% ORDER BY v.salary.minimalAmount ASC LIMIT 1")
+    public Vacancy findFirstVacancyWithMinimalSalaryByLocation(String vacancyName, String location);
 
-    @Query("SELECT v FROM Vacancy v WHERE v.salary.maximumAmount > 0 AND v.location LIKE %?1% ORDER BY v.salary.minimalAmount DESC")
-    public Vacancy findFirstVacancyWithMaximalSalaryByLocation(String location);
+    @Query("SELECT v FROM Vacancy v WHERE v.salary.maximumAmount > 0 AND v.location LIKE %?2%  AND v.name LIKE %?1% ORDER BY v.salary.minimalAmount DESC LIMIT 1")
+    public Vacancy findFirstVacancyWithMaximalSalaryByLocation(String vacancyName, String location);
 
-    @Query("SELECT v FROM Vacancy v WHERE v.salary.maximumAmount > 0 ORDER BY v.salary.minimalAmount DESC")
-    public Vacancy findFirstVacancyWithMaximalSalary();
+    @Query("SELECT v FROM Vacancy v WHERE v.salary.maximumAmount > 0  AND v.name LIKE %?1% ORDER BY v.salary.minimalAmount DESC LIMIT 1")
+    public Vacancy findFirstVacancyWithMaximalSalary(String vacancyName);
 
     long count();
 }

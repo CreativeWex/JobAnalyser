@@ -25,7 +25,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/vacancies")
 public class VacanciesController {
-    private final static String CONTROLLER_PATH = "/api/v1/vacancies";
+    private static final String CONTROLLER_PATH = "/api/v1/vacancies";
 
     private final VacancyService vacancyService;
     private final SalaryService salaryService;
@@ -62,6 +62,7 @@ public class VacanciesController {
             dto.setExceptionMessage(e.getMessage());
             dto.setLocalDateTime(LocalDateTime.now());
             dto.setEndpoint(CONTROLLER_PATH);
+            log.error(dto);
             return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -80,6 +81,7 @@ public class VacanciesController {
             dto.setExceptionMessage(e.getMessage());
             dto.setLocalDateTime(LocalDateTime.now());
             dto.setEndpoint(CONTROLLER_PATH + "/salary_statistics");
+            log.error(dto);
             return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
