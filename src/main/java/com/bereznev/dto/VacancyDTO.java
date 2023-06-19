@@ -5,23 +5,31 @@ package com.bereznev.dto;
     =====================================
  */
 
-import com.bereznev.model.Employer;
-import com.bereznev.model.Vacancy;
+import com.bereznev.entity.Vacancy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VacancyDTO {
 
-    @JsonProperty("found")
+public class VacancyDTO {
+    @JsonProperty("time_spent")
+    private String timeSpent;
+
+    @JsonProperty("filtered_by_name")
+    private String nameFilter = null;
+
+    @JsonProperty("filtered_by_location")
+    private String locationFilter = null;
+
+    @JsonProperty("vacancies_number")
     private int vacanciesNumber;
 
-    @JsonProperty("items")
-    private Set<Vacancy> vacancies;
+    @JsonProperty("vacancies")
+    private List<Vacancy> vacancies;
 }

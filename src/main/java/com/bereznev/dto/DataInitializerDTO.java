@@ -5,7 +5,6 @@ package com.bereznev.dto;
     =====================================
  */
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,15 +16,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class ErrorDTO {
-    private String status = "error";
+public class DataInitializerDTO {
+    private String status;
+
+    private String description;
 
     @JsonProperty("date_time")
     private LocalDateTime localDateTime;
 
-    @JsonProperty("description")
-    private String exceptionMessage;
-
-    @JsonProperty("path")
-    private String endpoint;
+    @JsonProperty("time_spent")
+    private String timeSpent;
 }

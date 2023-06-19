@@ -7,11 +7,8 @@ package com.bereznev.exception;
 
 import lombok.Getter;
 
-import java.io.IOException;
-
 @Getter
 public class SendingUrlRequestException extends RuntimeException {
-
     private final String resourceName;
     private final int responseCode;
     private final Exception exception;

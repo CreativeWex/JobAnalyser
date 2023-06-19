@@ -1,11 +1,25 @@
 package com.bereznev.repository;
 /*
     =====================================
-    @project ClientsMicroservice
     @author Bereznev Nikita @CreativeWex
     =====================================
  */
 
-//@Repository
-//public interface EmployerRepository extends JpaRepository<Employer, Long> {
-//}
+import com.bereznev.entity.Employer;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface EmployerRepository extends JpaRepository<Employer, Long> {
+    @Query(value = "delete from employers where id >= 0", nativeQuery = true)
+    public void deleteAll();
+
+    @Query(value = "SELECT e FROM Employer e JOIN e.vacancies v WHERE v.name LIKE %:vacancyName%")
+    public List<Employer> getAllByVacancyName(String vacancyName);
+
+    @Query(value = "SELECT e FROM Employer e JOIN e.vacancies v WHERE v.name LIKE %?1% and e.location = ?2")
+    public List<Employer> getAllByVacancyNameAndLocation(String vacancyName, String location);
+}

@@ -6,6 +6,8 @@ package com.bereznev.controller;
  */
 
 import com.bereznev.dto.ErrorDTO;
+import com.bereznev.dto.SalaryDTO;
+import com.bereznev.dto.VacancyDTO;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
 import lombok.extern.log4j.Log4j;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/vacancies")
 public class VacanciesController {
+    private static final String CONTROLLER_PATH = "/api/v1/vacancies";
 
     private final VacancyService vacancyService;
     private final SalaryService salaryService;
@@ -35,38 +38,51 @@ public class VacanciesController {
 
     @GetMapping
     public ResponseEntity<?> getAll(
-            @RequestParam(value = "vacancy") String vacancyName,
+            @RequestParam(value = "name", required = false) Optional<String> vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
+        VacancyDTO vacancyDTO = new VacancyDTO();
+        long startTime = System.currentTimeMillis();
         try {
-            if (location.isPresent()) {
-                return null; //TODO
+            if (vacancyName.isPresent()) {
+                vacancyDTO.setNameFilter(vacancyName.get());
+                if (location.isPresent()) {
+                    vacancyDTO.setLocationFilter(location.get());
+                    vacancyDTO.setVacancies(vacancyService.getAllByNameAndLocation(vacancyName.get(), location.get()));
+                } else {
+                    vacancyDTO.setVacancies(vacancyService.getAllByName(vacancyName.get()));
+                }
             } else {
-                return new ResponseEntity<>(vacancyService.getVacanciesByName(vacancyName), HttpStatus.OK);
+                vacancyDTO.setVacancies(vacancyService.getAll());
             }
+            vacancyDTO.setVacanciesNumber(vacancyDTO.getVacancies().size());
+            vacancyDTO.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
+            return new ResponseEntity<>(vacancyDTO, HttpStatus.OK);
         } catch (Exception e) {
-            ErrorDTO errorDTO = new ErrorDTO();
-            errorDTO.setEndpoint("/api/v1/vacancies");
-            errorDTO.setTimestamp(LocalDateTime.now());
-            errorDTO.setExceptionMessage(e.getMessage());
-            return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorDTO dto = new ErrorDTO();
+            dto.setExceptionMessage(e.getMessage());
+            dto.setLocalDateTime(LocalDateTime.now());
+            dto.setEndpoint(CONTROLLER_PATH);
+            log.error(dto);
+            return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/salary_statistics")
-    public ResponseEntity<?> getSalaryStatistics(
-            @RequestParam(value = "vacancy") String vacancyName,
+        public ResponseEntity<?> getSalaryStatistics(
+            @RequestParam(value = "name") String vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
+        long startTime = System.currentTimeMillis();
         try {
-            if (location.isPresent()) {
-                return new ResponseEntity<>(salaryService.getSalaryStatisticsByLocation(vacancyName, location.get()), HttpStatus.OK);
-            }
-            return new ResponseEntity<>(salaryService.getSalaryStatistics(vacancyName), HttpStatus.OK);
+            SalaryDTO dto = salaryService.getSalaryStatistics(vacancyName, location);
+            dto.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
+            return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (Exception e) {
-            ErrorDTO errorDTO = new ErrorDTO();
-            errorDTO.setEndpoint("/api/v1/vacancies");
-            errorDTO.setTimestamp(LocalDateTime.now());
-            errorDTO.setExceptionMessage(e.getMessage());
-            return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+            ErrorDTO dto = new ErrorDTO();
+            dto.setExceptionMessage(e.getMessage());
+            dto.setLocalDateTime(LocalDateTime.now());
+            dto.setEndpoint(CONTROLLER_PATH + "/salary_statistics");
+            log.error(dto);
+            return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
