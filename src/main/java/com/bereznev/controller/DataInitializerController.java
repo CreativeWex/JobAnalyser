@@ -21,13 +21,13 @@ import java.util.Optional;
 @Log4j
 @RestController
 @RequestMapping("/api/v1/data")
-public class DatabaseController {
+public class DataInitializerController {
     private final DataInitializer dataInitializer;
 
     private static final String REFRESH_DESCRIPTION_MESSAGE = "Data refreshed successfully";
     private static final String CLEAR_DESCRIPTION_MESSAGE = "Data refreshed successfully";
 
-    public DatabaseController(DataInitializer dataInitializer) {
+    public DataInitializerController(DataInitializer dataInitializer) {
         super();
         this.dataInitializer = dataInitializer;
     }

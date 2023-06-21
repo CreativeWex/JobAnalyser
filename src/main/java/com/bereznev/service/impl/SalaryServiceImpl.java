@@ -34,7 +34,6 @@ public class SalaryServiceImpl implements SalaryService {
         this.salaryRepository = salaryRepository;
     }
 
-    //FIXME: &location=санкт -  "average_value": 0, &location=казань - "Cannot invoke \"com.bereznev.entity.Vacancy.getSalary()\" because \"vacancy\" is null
     @Override
     public SalaryDTO getSalaryStatistics(String vacancyName, Optional<String> location) {
         SalaryDTO dto = new SalaryDTO();

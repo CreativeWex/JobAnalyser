@@ -48,4 +48,31 @@ public class EmployerController {
             return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable(value = "id") long id) {
+        try {
+            return new ResponseEntity<>(employerService.getById(id), HttpStatus.OK);
+        } catch (Exception e) {
+            ErrorDTO dto = new ErrorDTO();
+            dto.setExceptionMessage(e.getMessage());
+            dto.setLocalDateTime(LocalDateTime.now());
+            dto.setEndpoint(CONTROLLER_PATH);
+            return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{id}/compare_to")
+    public ResponseEntity<?> compareTo(@PathVariable(value = "id") long firstId, @RequestParam(value = "id") long secondId) {
+        try {
+            employerService.compareTo(firstId, secondId);
+            return new ResponseEntity<>("ok", HttpStatus.OK);
+        } catch (Exception e) {
+            ErrorDTO dto = new ErrorDTO();
+            dto.setExceptionMessage(e.getMessage());
+            dto.setLocalDateTime(LocalDateTime.now());
+            dto.setEndpoint(CONTROLLER_PATH);
+            return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

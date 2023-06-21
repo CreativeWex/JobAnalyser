@@ -18,7 +18,6 @@ import java.net.URL;
 
 @Slf4j
 public class CurrencyConverter {
-
     private static final String API_URL = "https://www.cbr-xml-daily.ru/daily_json.js";
 
     private CurrencyConverter() {

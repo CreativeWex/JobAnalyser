@@ -5,8 +5,8 @@ package com.bereznev.controller;
     =====================================
  */
 
-import com.bereznev.dto.ErrorDTO;
 import com.bereznev.dto.SalaryDTO;
+import com.bereznev.dto.SkillsDto;
 import com.bereznev.dto.VacancyDTO;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Log4j
@@ -58,17 +57,12 @@ public class VacanciesController {
             vacancyDTO.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
             return new ResponseEntity<>(vacancyDTO, HttpStatus.OK);
         } catch (Exception e) {
-            ErrorDTO dto = new ErrorDTO();
-            dto.setExceptionMessage(e.getMessage());
-            dto.setLocalDateTime(LocalDateTime.now());
-            dto.setEndpoint(CONTROLLER_PATH);
-            log.error(dto);
-            return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ExceptionHandler.handleException(e, CONTROLLER_PATH);
         }
     }
 
     @GetMapping("/salary_statistics")
-        public ResponseEntity<?> getSalaryStatistics(
+    public ResponseEntity<?> getSalaryStatistics(
             @RequestParam(value = "name") String vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
         long startTime = System.currentTimeMillis();
@@ -77,12 +71,22 @@ public class VacanciesController {
             dto.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (Exception e) {
-            ErrorDTO dto = new ErrorDTO();
-            dto.setExceptionMessage(e.getMessage());
-            dto.setLocalDateTime(LocalDateTime.now());
-            dto.setEndpoint(CONTROLLER_PATH + "/salary_statistics");
-            log.error(dto);
-            return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ExceptionHandler.handleException(e, CONTROLLER_PATH + "/salary_statistics");
+        }
+    }
+
+    @GetMapping("/skills_statistics")
+    public ResponseEntity<?> getSkillsStatistics(
+            @RequestParam(value = "name", required = false) Optional<String> vacancyName,
+            @RequestParam(value = "location", required = false) Optional<String> location,
+            @RequestParam(value = "amount", required = false) Optional<Integer> amount) {
+        long startTime = System.currentTimeMillis();
+        try {
+            SkillsDto dto = vacancyService.getMostPopularSkills(vacancyName, location, amount);
+            dto.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        } catch (Exception e) {
+            return ExceptionHandler.handleException(e, CONTROLLER_PATH + "/skills_statistics");
         }
     }
 }

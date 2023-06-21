@@ -41,13 +41,15 @@ public class EmployerServiceImpl implements EmployerService {
         return employerRepository.count();
     }
 
-    @Override //todo рафакторинг
+    @Override //FIXME
+    public void compareTo(long firstId, long secondId) {
+        Employer firstEmployer = getById(firstId);
+        Employer secondEmployer = getById(secondId);
+        log.debug(String.format("Comparing Employers: %s and %s", firstEmployer, secondEmployer));
+    }
+
     public Employer getById(long employerId) {
-        if (employerRepository.findById(employerId).isPresent()) {
-            return employerRepository.findById(employerId).get();
-        } else {
-            throw new ResourceNotFoundException("Employer", "id", employerId);
-        }
+        return employerRepository.findById(employerId).orElseThrow(() -> new ResourceNotFoundException("Employer", "Id", employerId));
     }
 
     @Override
