@@ -14,19 +14,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 
-public class SalaryDTO {
-    @JsonProperty("time_spent")
-    private String timeSpent;
-
-    @JsonProperty("filtered_by_name")
-    private String nameFilter = null;
-
-    @JsonProperty("filtered_by_location")
-    private String locationFilter = null;
-
+public class SalaryDTO extends Dto{
     @JsonProperty("salary_currency")
     private String currency;
 

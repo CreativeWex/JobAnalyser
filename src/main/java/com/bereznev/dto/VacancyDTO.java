@@ -17,16 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class VacancyDTO {
-    @JsonProperty("time_spent")
-    private String timeSpent;
-
-    @JsonProperty("filtered_by_name")
-    private String nameFilter = null;
-
-    @JsonProperty("filtered_by_location")
-    private String locationFilter = null;
-
+public class VacancyDTO extends Dto {
     @JsonProperty("vacancies_number")
     private int vacanciesNumber;
 
