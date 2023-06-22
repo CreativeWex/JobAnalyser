@@ -5,16 +5,14 @@ package com.bereznev.service.impl;
     =====================================
  */
 
+import com.bereznev.entity.Skill;
 import com.bereznev.exception.DataInitialisationException;
 import com.bereznev.mapper.EmployersMapper;
 import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.entity.Employer;
 import com.bereznev.entity.Salary;
 import com.bereznev.entity.Vacancy;
-import com.bereznev.service.DataInitializer;
-import com.bereznev.service.EmployerService;
-import com.bereznev.service.SalaryService;
-import com.bereznev.service.VacancyService;
+import com.bereznev.service.*;
 import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -42,11 +40,14 @@ public class DataInitializerImpl implements DataInitializer {
     private final VacancyService vacancyService;
     private final SalaryService salaryService;
 
+    private final SkillService skillService;
+
     @Autowired
-    public DataInitializerImpl(EmployerService employerService, VacancyService vacancyService, SalaryService salaryService) {
+    public DataInitializerImpl(EmployerService employerService, VacancyService vacancyService, SalaryService salaryService, SkillService skillService) {
         this.employerService = employerService;
         this.vacancyService = vacancyService;
         this.salaryService = salaryService;
+        this.skillService = skillService;
     }
 
     public int countJSONResponsePages(String url) {
@@ -54,15 +55,28 @@ public class DataInitializerImpl implements DataInitializer {
         return new JSONObject(response).getInt("pages");
     }
 
+    private void fillSalaryForVacancy(JSONObject jsonObject, Vacancy vacancy) {
+        JSONObject salaryJson = jsonObject.optJSONObject("salary");
+        Salary salary = new Salary(BigDecimal.ZERO, BigDecimal.ZERO, "RUR");
+        if (salaryJson != null) {
+            salary = new Salary(
+                    salaryJson.optBigDecimal("from", BigDecimal.ZERO),
+                    salaryJson.optBigDecimal("to", BigDecimal.ZERO),
+                    salaryJson.optString("currency", "RUR")
+            );
+        }
+        vacancy.setSalary(salary);
+        salary.setVacancy(vacancy);
+    }
+
     private void fillKeySkillsForVacancy(JsonObject jsonObject, Vacancy vacancy) {
         JsonArray keySkillsArray = jsonObject.getAsJsonArray("key_skills");
-        List<String> skills = new ArrayList<>();
         for (int i = 0; i < keySkillsArray.size(); i++) {
             JsonObject skillObject = keySkillsArray.get(i).getAsJsonObject();
-            String skillName = skillObject.get("name").getAsString();
-            skills.add(skillName);
+            Skill skill = new Skill(skillObject.get("name").getAsString());
+            skill.setVacancy(vacancy);
+            vacancy.getSkills().add(skill);
         }
-        vacancy.setSkills(skills);
     }
 
     private void fillVacancyFields(Vacancy vacancy) {
@@ -89,28 +103,15 @@ public class DataInitializerImpl implements DataInitializer {
         if (addressJson != null) {
             vacancy.setFullAddress(addressJson.optString("raw"));
         }
-        JSONObject salaryJson = jsonObject.optJSONObject("salary");
-        Salary salary = new Salary(BigDecimal.ZERO, BigDecimal.ZERO, "RUR");
-        if (salaryJson != null) {
-            salary = new Salary(
-                    salaryJson.optBigDecimal("from", BigDecimal.ZERO),
-                    salaryJson.optBigDecimal("to", BigDecimal.ZERO),
-                    salaryJson.optString("currency", "RUR")
-            );
-        }
         String description =  jsonObject.optString("description");
         if (description != null) {
             vacancy.setDescription(description.replaceAll("\\<.*?\\>", ""));
         }
-        if (description != null) {
-            vacancy.setDescription(description.replaceAll("\\<.*?\\>", ""));
-        }
+        fillSalaryForVacancy(jsonObject, vacancy);
         fillKeySkillsForVacancy(JsonParser.parseString(response).getAsJsonObject(), vacancy);
 
-        vacancy.setSalary(salary);
-        salary.setVacancy(vacancy);
         vacancyService.save(vacancy);
-        salaryService.save(salary);
+        salaryService.save(vacancy.getSalary());
     }
 
     private void fillVacanciesForEmployer(Employer employer) {

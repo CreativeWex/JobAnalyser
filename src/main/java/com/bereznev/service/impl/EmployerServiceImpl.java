@@ -18,7 +18,6 @@ import java.util.List;
 @Log4j
 @Service
 public class EmployerServiceImpl implements EmployerService {
-
     private final EmployerRepository employerRepository;
 
     @Autowired

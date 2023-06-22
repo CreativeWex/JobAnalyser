@@ -6,46 +6,40 @@ package com.bereznev.entity;
  */
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 
 @Entity
-@Table(name = "salaries")
-public class Salary {
+@Table(name = "skills")
+public class Skill {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private BigDecimal minimalAmount;
-
-    private BigDecimal maximumAmount;
-
-    private String currency;
+    @Column(nullable = false)
+    private String name;
 
     @JsonBackReference
-    @OneToOne(mappedBy = "salary")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vacancy_id", nullable = false)
     private Vacancy vacancy;
 
-    public Salary(BigDecimal minimalAmount, BigDecimal maximumAmount, String currency) {
-        this.minimalAmount = minimalAmount;
-        this.maximumAmount = maximumAmount;
-        this.currency = currency;
+    public Skill(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return "Salary{" +
-                "minimalAmount=" + minimalAmount +
-                ", maximumAmount=" + maximumAmount +
-                ", currency='" + currency + '\'' +
+        return "Skill{" +
+                "name='" + name + '\'' +
                 '}';
     }
 }
