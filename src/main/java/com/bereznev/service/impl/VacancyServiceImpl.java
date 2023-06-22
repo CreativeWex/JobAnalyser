@@ -5,7 +5,6 @@ package com.bereznev.service.impl;
     =====================================
  */
 
-import com.bereznev.dto.SkillsDto;
 import com.bereznev.entity.Vacancy;
 import com.bereznev.exception.ResourceNotFoundException;
 import com.bereznev.repository.VacancyRepository;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Log4j
 @Service
