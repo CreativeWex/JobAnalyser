@@ -14,12 +14,12 @@ import java.util.List;
 
 @Repository
 public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
-    @Query(value = "select v from Vacancy v where v.name LIKE %?1% and v.location LIKE %?2%")
+    @Query(value = "SELECT v FROM Vacancy v WHERE v.name LIKE %?1% AND v.location LIKE %?2%")
     public List<Vacancy> getAllByNameAndLocation(String vacancyName, String location);
-    @Query(value = "select v from Vacancy v where v.name LIKE %?1%")
+    @Query(value = "SELECT v FROM Vacancy v WHERE v.name LIKE %?1%")
     public List<Vacancy> getAllByName(String vacancyName);
 
-    @Query(value = "delete from vacancies where id >= 0", nativeQuery = true)
+    @Query(value = "DELETE FROM vacancies WHERE id >= 0", nativeQuery = true)
     public void deleteAll();
 
     public long count();

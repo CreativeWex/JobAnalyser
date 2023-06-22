@@ -6,7 +6,6 @@ package com.bereznev.entity;
  */
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
@@ -33,9 +32,8 @@ public class Vacancy {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ElementCollection
-    @CollectionTable(name = "vacancy_skills", joinColumns = @JoinColumn(name = "vacancy_id"))
-    private List<String> skills = new ArrayList<>();
+    @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Skill> skills = new ArrayList<>();
 
     @SerializedName("alternate_url")
     @Column(columnDefinition = "TEXT")

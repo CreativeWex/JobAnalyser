@@ -5,17 +5,19 @@ package com.bereznev.service.impl;
     =====================================
  */
 
+import com.bereznev.entity.Skill;
+import com.bereznev.exception.DataInitialisationException;
 import com.bereznev.mapper.EmployersMapper;
 import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.entity.Employer;
 import com.bereznev.entity.Salary;
 import com.bereznev.entity.Vacancy;
-import com.bereznev.service.DataInitializer;
-import com.bereznev.service.EmployerService;
-import com.bereznev.service.SalaryService;
-import com.bereznev.service.VacancyService;
+import com.bereznev.service.*;
 import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.extern.log4j.Log4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,16 +40,43 @@ public class DataInitializerImpl implements DataInitializer {
     private final VacancyService vacancyService;
     private final SalaryService salaryService;
 
+    private final SkillService skillService;
+
     @Autowired
-    public DataInitializerImpl(EmployerService employerService, VacancyService vacancyService, SalaryService salaryService) {
+    public DataInitializerImpl(EmployerService employerService, VacancyService vacancyService, SalaryService salaryService, SkillService skillService) {
         this.employerService = employerService;
         this.vacancyService = vacancyService;
         this.salaryService = salaryService;
+        this.skillService = skillService;
     }
 
     public int countJSONResponsePages(String url) {
         String response = HttpUtils.sendHttpRequest( url, "DataInitializerImpl (countJSONResponsePages)");
         return new JSONObject(response).getInt("pages");
+    }
+
+    private void fillSalaryForVacancy(JSONObject jsonObject, Vacancy vacancy) {
+        JSONObject salaryJson = jsonObject.optJSONObject("salary");
+        Salary salary = new Salary(BigDecimal.ZERO, BigDecimal.ZERO, "RUR");
+        if (salaryJson != null) {
+            salary = new Salary(
+                    salaryJson.optBigDecimal("from", BigDecimal.ZERO),
+                    salaryJson.optBigDecimal("to", BigDecimal.ZERO),
+                    salaryJson.optString("currency", "RUR")
+            );
+        }
+        vacancy.setSalary(salary);
+        salary.setVacancy(vacancy);
+    }
+
+    private void fillKeySkillsForVacancy(JsonObject jsonObject, Vacancy vacancy) {
+        JsonArray keySkillsArray = jsonObject.getAsJsonArray("key_skills");
+        for (int i = 0; i < keySkillsArray.size(); i++) {
+            JsonObject skillObject = keySkillsArray.get(i).getAsJsonObject();
+            Skill skill = new Skill(skillObject.get("name").getAsString());
+            skill.setVacancy(vacancy);
+            vacancy.getSkills().add(skill);
+        }
     }
 
     private void fillVacancyFields(Vacancy vacancy) {
@@ -75,26 +103,15 @@ public class DataInitializerImpl implements DataInitializer {
         if (addressJson != null) {
             vacancy.setFullAddress(addressJson.optString("raw"));
         }
-        JSONObject salaryJson = jsonObject.optJSONObject("salary");
-        Salary salary = new Salary(BigDecimal.ZERO, BigDecimal.ZERO, "RUR");
-        if (salaryJson != null) {
-            salary = new Salary(
-                    salaryJson.optBigDecimal("from", BigDecimal.ZERO),
-                    salaryJson.optBigDecimal("to", BigDecimal.ZERO),
-                    salaryJson.optString("currency", "RUR")
-            );
-        }
         String description =  jsonObject.optString("description");
         if (description != null) {
             vacancy.setDescription(description.replaceAll("\\<.*?\\>", ""));
         }
-        if (description != null) {
-            vacancy.setDescription(description.replaceAll("\\<.*?\\>", ""));
-        }
-        vacancy.setSalary(salary);
-        salary.setVacancy(vacancy);
+        fillSalaryForVacancy(jsonObject, vacancy);
+        fillKeySkillsForVacancy(JsonParser.parseString(response).getAsJsonObject(), vacancy);
+
         vacancyService.save(vacancy);
-        salaryService.save(salary);
+        salaryService.save(vacancy.getSalary());
     }
 
     private void fillVacanciesForEmployer(Employer employer) {
@@ -137,7 +154,7 @@ public class DataInitializerImpl implements DataInitializer {
         int employersPageAmount = countJSONResponsePages(EMPLOYERS_API_URL + "?name=" + vacancyName);
         List<Employer> employers = new ArrayList<>();
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) { //FIXME employersPageAmount
+        for (int i = 0; i < 2; i++) { //FIXME employersPageAmount
             log.debug("Loaded page " + i);
             String response = HttpUtils.sendHttpRequest(EMPLOYERS_API_URL + "?name=" + vacancyName + "&page=" + i,
                     "EmployerServiceImpl (getAll())");
@@ -165,28 +182,39 @@ public class DataInitializerImpl implements DataInitializer {
     @Override
     public void initData(Optional<String> vacancyName) {
         log.debug("initData invoked");
-        deleteAllData();
+        deleteAllData(); //FIXME
         long startTime = System.currentTimeMillis();
-        if (vacancyName.isPresent()) {
-            initEmployersSortByVacancyName(vacancyName.get());
-        } else {
-            initAllEmployers();
+        try {
+            if (vacancyName.isPresent()) {
+                initEmployersSortByVacancyName(vacancyName.get());
+            } else {
+                initAllEmployers();
+            }
+        } catch (Exception e) {
+            throw new DataInitialisationException("initData", e.getMessage());
         }
         log.debug(String.format("Data initialisation completed, time: %d ms", System.currentTimeMillis() - startTime));
     }
 
     @Override
+    @Transactional
     public void deleteAllData() {
         log.debug("deleteAllData invoked");
         long startTime = System.currentTimeMillis();
-        if (salaryService.countDatabaseLinesAmount() > 0) {
-            salaryService.deleteAll();
-        }
-        if (vacancyService.countDatabaseLinesAmount() > 0) {
-            vacancyService.deleteAll();
-        }
-        if (employerService.countDatabaseLinesAmount() > 0) {
-            employerService.deleteAll();
+
+        try {
+            if (vacancyService.countDatabaseLinesAmount() > 0) {
+                vacancyService.deleteAll();
+            }
+            if (salaryService.countDatabaseLinesAmount() > 0) {
+                salaryService.deleteAll();
+            }
+            if (employerService.countDatabaseLinesAmount() > 0) {
+                employerService.deleteAll();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DataInitialisationException("deleteAllData", e.getMessage());
         }
         log.debug(String.format("All data removed successfully, time: %d ms", System.currentTimeMillis() - startTime));
     }

@@ -7,26 +7,15 @@ package com.bereznev.dto;
 
 import com.bereznev.entity.Vacancy;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 
-public class SalaryDTO {
-    @JsonProperty("time_spent")
-    private String timeSpent;
-
-    @JsonProperty("filtered_by_name")
-    private String nameFilter = null;
-
-    @JsonProperty("filtered_by_location")
-    private String locationFilter = null;
-
+public class SalaryDto extends Dto{
     @JsonProperty("salary_currency")
     private String currency;
 
@@ -48,7 +37,7 @@ public class SalaryDTO {
     @JsonProperty("highest_salary_limit")
     private Vacancy highestPaidVacancy;
 
-    public SalaryDTO(String currency, int vacanciesFound, BigDecimal minimalSalaryLimit, BigDecimal maximumSalaryLimit,
+    public SalaryDto(String currency, int vacanciesFound, BigDecimal minimalSalaryLimit, BigDecimal maximumSalaryLimit,
                      BigDecimal averageValue, Vacancy lowestPaidVacancy, Vacancy highestPaidVacancy) {
         this.currency = currency;
         this.vacanciesFound = vacanciesFound;

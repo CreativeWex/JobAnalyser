@@ -20,6 +20,8 @@ public interface EmployerService {
     public void deleteAll();
     public long countDatabaseLinesAmount();
 
+    public void compareTo(long firstId, long secondId);
+
 //    public List<Employer> getEmployersByRegion(String region);
 //    public List<Employer> getEmployersWithOpenVacancies();
 //    public List<String> getRegionsWithMostEmployerAmount();
