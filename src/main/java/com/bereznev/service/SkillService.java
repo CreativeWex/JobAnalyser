@@ -5,9 +5,11 @@ package com.bereznev.service;
     =====================================
  */
 
+import com.bereznev.dto.SkillsDto;
 import com.bereznev.entity.Skill;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SkillService {
     public void saveAll(List<Skill> skills);
@@ -16,4 +18,6 @@ public interface SkillService {
     public void deleteAll();
 
     public long countDatabaseLinesAmount();
+
+    public SkillsDto getMostPopularSkills(Optional<String> vacancyName, Optional<String> location, Optional<Integer> amount);
 }

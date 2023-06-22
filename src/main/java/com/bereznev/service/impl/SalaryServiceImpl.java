@@ -5,7 +5,7 @@ package com.bereznev.service.impl;
     =====================================
  */
 
-import com.bereznev.dto.SalaryDTO;
+import com.bereznev.dto.SalaryDto;
 import com.bereznev.entity.Salary;
 import com.bereznev.entity.Vacancy;
 import com.bereznev.exception.ResourceNotFoundException;
@@ -32,54 +32,6 @@ public class SalaryServiceImpl implements SalaryService {
     public SalaryServiceImpl(VacancyService vacancyService, SalaryRepository salaryRepository) {
         this.vacancyService = vacancyService;
         this.salaryRepository = salaryRepository;
-    }
-
-    @Override
-    public SalaryDTO getSalaryStatistics(String vacancyName, Optional<String> location) {
-        SalaryDTO dto = new SalaryDTO();
-        dto.setNameFilter(vacancyName);
-        dto.setCurrency("RUR");
-        try {
-            dto.setHighestPaidVacancy(findHighestPaidVacancy(vacancyName.substring(1), location));
-            dto.setLowestPaidVacancy(findLowestPaidVacancy(vacancyName.substring(1), location));
-        } catch (Exception e) {
-            throw new ResourceNotFoundException("Vacancies", "vacancyName / location", vacancyName + "/" + location);
-        }
-        dto.setMaximumSalaryLimit(dto.getHighestPaidVacancy().getSalary().getMaximumAmount());
-        dto.setMinimalSalaryLimit(dto.getLowestPaidVacancy().getSalary().getMinimalAmount());
-        dto.setVacanciesFound(vacancyService.getAllByName(vacancyName).size());
-        if (location.isPresent()) {
-            dto.setAverageValue(calculateAverageSalaryValue(vacancyService.getAllByNameAndLocation(vacancyName, location.get())));
-            dto.setLocationFilter(location.get());
-            return dto;
-        }
-        dto.setAverageValue(calculateAverageSalaryValue(vacancyService.getAllByName(vacancyName)));
-        return dto;
-    }
-
-    @Override
-    public void deleteAll() {
-        try {
-            salaryRepository.deleteAll();
-            log.debug("All salaries data deleted");
-        } catch (Exception e) {
-            log.error("Error deleting salaries data: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public Salary save(Salary salary) {
-        return salaryRepository.save(salary);
-    }
-
-    @Override
-    public long countDatabaseLinesAmount() {
-        return salaryRepository.count();
-    }
-
-    @Override
-    public void saveAll(List<Salary> salaries) {
-        salaryRepository.saveAll(salaries);
     }
 
     public Vacancy findLowestPaidVacancy(String vacancyName, Optional<String> location) {
@@ -111,5 +63,56 @@ public class SalaryServiceImpl implements SalaryService {
             averageForkSum = averageForkSum.add(minimalPrice.add(maximalPrice).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP));
         }
         return averageForkSum.divide(BigDecimal.valueOf(vacancies.size()), RoundingMode.HALF_UP);
+    }
+    @Override
+    public SalaryDto getSalaryStatistics(String vacancyName, Optional<String> location) {
+        SalaryDto dto = new SalaryDto();
+        long startTime = System.currentTimeMillis();
+
+        dto.setNameFilter(vacancyName);
+        dto.setCurrency("RUR");
+        try {
+            dto.setHighestPaidVacancy(findHighestPaidVacancy(vacancyName.substring(1), location));
+            dto.setLowestPaidVacancy(findLowestPaidVacancy(vacancyName.substring(1), location));
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Vacancies", "vacancyName / location", vacancyName + "/" + location);
+        }
+        dto.setMaximumSalaryLimit(dto.getHighestPaidVacancy().getSalary().getMaximumAmount());
+        dto.setMinimalSalaryLimit(dto.getLowestPaidVacancy().getSalary().getMinimalAmount());
+        dto.setVacanciesFound(vacancyService.getAllByName(vacancyName).size());
+        if (location.isPresent()) {
+            dto.setAverageValue(calculateAverageSalaryValue(vacancyService.getAllByNameAndLocation(vacancyName, location.get())));
+            dto.setLocationFilter(location.get());
+            return dto;
+        }
+        dto.setAverageValue(calculateAverageSalaryValue(vacancyService.getAllByName(vacancyName)));
+        dto.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
+
+        return dto;
+    }
+
+    @Override
+    public void deleteAll() {
+        try {
+            salaryRepository.deleteAll();
+            log.debug("All salaries data deleted");
+        } catch (Exception e) {
+            log.error("Error deleting salaries data: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Salary save(Salary salary) {
+        return salaryRepository.save(salary);
+    }
+
+    @Override
+    public long countDatabaseLinesAmount() {
+        return salaryRepository.count();
+    }
+
+    @Override
+    public void saveAll(List<Salary> salaries) {
+        salaryRepository.saveAll(salaries);
     }
 }

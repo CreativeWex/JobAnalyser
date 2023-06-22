@@ -71,13 +71,4 @@ public class VacancyServiceImpl implements VacancyService {
     public long countDatabaseLinesAmount() {
         return vacancyRepository.count();
     }
-
-    @Override
-    public SkillsDto getMostPopularSkills(Optional<String> vacancyName, Optional<String> location, Optional<Integer> amount) {
-        SkillsDto skillsDto = new SkillsDto();
-
-        return null;
-    }
-
-
 }

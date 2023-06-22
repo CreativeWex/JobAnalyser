@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class VacancyDTO extends Dto {
+public class VacancyDto extends Dto {
     @JsonProperty("vacancies_number")
     private int vacanciesNumber;
 

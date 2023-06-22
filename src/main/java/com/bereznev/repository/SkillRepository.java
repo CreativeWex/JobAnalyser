@@ -14,6 +14,19 @@ import java.util.List;
 
 @Repository
 public interface SkillRepository extends JpaRepository<Skill, Long> {
-    @Query("SELECT s FROM Skill s WHERE s.name = ?1")
-    public Skill findSkillByName(String name);
+    @Query(value = "SELECT s FROM Skill s INNER JOIN Vacancy v ON v.id = s.vacancy.id " +
+            "GROUP BY s ORDER BY COUNT(DISTINCT s) DESC")
+    public List<String> getMostPopularSkills();
+
+    @Query(value = "SELECT s FROM Skill s INNER JOIN Vacancy v ON v.id = s.vacancy.id " +
+            "WHERE v.name LIKE %?1% GROUP BY s ORDER BY COUNT(DISTINCT s) DESC")
+    public List<String> getMostPopularSkillsByName(String vacancyName);
+
+    @Query(value = "SELECT s FROM Skill s INNER JOIN Vacancy v ON v.id = s.vacancy.id " +
+            "WHERE v.location LIKE %?1% GROUP BY s ORDER BY COUNT(DISTINCT s) DESC")
+    public List<String> getMostPopularSkillsByLocation(String location);
+
+    @Query(value = "SELECT s FROM Skill s INNER JOIN Vacancy v ON v.id = s.vacancy.id " +
+            "WHERE v.name LIKE %?1% AND v.location LIKE %?2% GROUP BY s ORDER BY COUNT(DISTINCT s) DESC")
+    public List<String> getMostPopularSkillsByNameAndLocation(String vacancyName, String location);
 }

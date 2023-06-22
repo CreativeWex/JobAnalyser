@@ -5,7 +5,7 @@ package com.bereznev.service;
     =====================================
  */
 
-import com.bereznev.dto.SalaryDTO;
+import com.bereznev.dto.SalaryDto;
 import com.bereznev.entity.Salary;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface SalaryService {
 
-    public SalaryDTO getSalaryStatistics(String vacancyName, Optional<String> location);
+    public SalaryDto getSalaryStatistics(String vacancyName, Optional<String> location);
 
     public void deleteAll();
 

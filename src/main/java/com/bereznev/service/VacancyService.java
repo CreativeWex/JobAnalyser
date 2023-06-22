@@ -25,6 +25,4 @@ public interface VacancyService {
     public void deleteAll();
 
     public long countDatabaseLinesAmount();
-
-    public SkillsDto getMostPopularSkills(Optional<String> vacancyName, Optional<String> location, Optional<Integer> amount);
 }

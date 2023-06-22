@@ -5,9 +5,7 @@ package com.bereznev.controller;
     =====================================
  */
 
-import com.bereznev.dto.SalaryDTO;
-import com.bereznev.dto.SkillsDto;
-import com.bereznev.dto.VacancyDTO;
+import com.bereznev.dto.VacancyDto;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
 import lombok.extern.log4j.Log4j;
@@ -39,7 +37,7 @@ public class VacanciesController {
     public ResponseEntity<?> getAll(
             @RequestParam(value = "name", required = false) Optional<String> vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
-        VacancyDTO vacancyDTO = new VacancyDTO();
+        VacancyDto vacancyDTO = new VacancyDto();
         long startTime = System.currentTimeMillis();
         try {
             if (vacancyName.isPresent()) {
@@ -58,35 +56,6 @@ public class VacanciesController {
             return new ResponseEntity<>(vacancyDTO, HttpStatus.OK);
         } catch (Exception e) {
             return ExceptionHandler.handleException(e, CONTROLLER_PATH);
-        }
-    }
-
-    @GetMapping("/salary_statistics")
-    public ResponseEntity<?> getSalaryStatistics(
-            @RequestParam(value = "name") String vacancyName,
-            @RequestParam(value = "location", required = false) Optional<String> location) {
-        long startTime = System.currentTimeMillis();
-        try {
-            SalaryDTO dto = salaryService.getSalaryStatistics(vacancyName, location);
-            dto.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
-            return new ResponseEntity<>(dto, HttpStatus.OK);
-        } catch (Exception e) {
-            return ExceptionHandler.handleException(e, CONTROLLER_PATH + "/salary_statistics");
-        }
-    }
-
-    @GetMapping("/skills_statistics")
-    public ResponseEntity<?> getSkillsStatistics(
-            @RequestParam(value = "name", required = false) Optional<String> vacancyName,
-            @RequestParam(value = "location", required = false) Optional<String> location,
-            @RequestParam(value = "amount", required = false) Optional<Integer> amount) {
-        long startTime = System.currentTimeMillis();
-        try {
-            SkillsDto dto = vacancyService.getMostPopularSkills(vacancyName, location, amount);
-            dto.setTimeSpent(System.currentTimeMillis() - startTime + " ms");
-            return new ResponseEntity<>(dto, HttpStatus.OK);
-        } catch (Exception e) {
-            return ExceptionHandler.handleException(e, CONTROLLER_PATH + "/skills_statistics");
         }
     }
 }
