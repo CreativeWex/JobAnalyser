@@ -5,6 +5,7 @@ package com.bereznev.dto;
     =====================================
  */
 
+import com.bereznev.exceptions.dto.Dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,14 +17,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class DataInitializerDTO {
+public class DataInitializerDTO extends Dto {
     private String status;
 
     private String description;
 
+    @JsonProperty("pages_amount")
+    private Integer pagesAmount;
+
     @JsonProperty("date_time")
     private LocalDateTime localDateTime;
-
-    @JsonProperty("time_spent")
-    private String timeSpent;
 }

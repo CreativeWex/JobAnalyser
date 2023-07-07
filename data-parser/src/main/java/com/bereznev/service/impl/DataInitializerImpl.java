@@ -1,4 +1,4 @@
-package com.bereznev.service;
+package com.bereznev.service.impl;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
@@ -9,6 +9,7 @@ import com.bereznev.crud.EmployerCrud;
 import com.bereznev.crud.SalaryCrud;
 import com.bereznev.crud.SkillCrud;
 import com.bereznev.crud.VacancyCrud;
+import com.bereznev.dto.DataInitializerDTO;
 import com.bereznev.entity.Skill;
 import com.bereznev.exceptions.logic.DataInitialisationException;
 import com.bereznev.mapper.EmployersMapper;
@@ -16,6 +17,7 @@ import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.entity.Employer;
 import com.bereznev.entity.Salary;
 import com.bereznev.entity.Vacancy;
+import com.bereznev.service.DataInitializer;
 import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,13 +39,15 @@ import java.util.Optional;
 @Service
 @Transactional
 public class DataInitializerImpl implements DataInitializer {
+    private Integer pagesAmount = 0;
+    private String currentEmployerRequestUrl;
+
     private static final String VACANCY_API_URL = "https://api.hh.ru/vacancies";
     private static final String EMPLOYERS_API_URL = "https://api.hh.ru/employers";
 
     private final EmployerCrud employerCrud;
     private final VacancyCrud vacancyCrud;
     private final SalaryCrud salaryCrud;
-
     private final SkillCrud skillCrud;
 
     @Autowired
@@ -153,50 +158,47 @@ public class DataInitializerImpl implements DataInitializer {
         return employers;
     }
 
-    public void initEmployersSortByVacancyName(String vacancyName) {
-        int employersPageAmount = countJSONResponsePages(EMPLOYERS_API_URL + "?name=" + vacancyName);
+    public void initEmployersByVacancyName(String vacancyName) {
         List<Employer> employers = new ArrayList<>();
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < 2; i++) { //FIXME employersPageAmount
-            log.debug("Loaded page " + i);
+        for (int i = 0; i < pagesAmount; i++) {
+            log.debug("\tstarted loading page " + i);
             String response = HttpUtils.sendHttpRequest(EMPLOYERS_API_URL + "?name=" + vacancyName + "&page=" + i,
                     "EmployerServiceImpl (getAll())");
             List<Employer> currentPageEmployers = parseEmployersFromJSON(response);
             employers.addAll(currentPageEmployers);
+            log.debug("\tloaded page " + i);
         }
         employerCrud.saveAll(employers);
         log.debug(String.format("Employers list built (size = %d, vacancy name = %s), time: %d ms", employers.size(), vacancyName, System.currentTimeMillis() - startTime));
     }
 
-    public void initAllEmployers() {
-        int employersPageAmount = countJSONResponsePages(EMPLOYERS_API_URL);
+    public void initEmployersByLocation(String location) {
         List<Employer> employers = new ArrayList<>();
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < 2; i++) { //FIXME employersPageAmount
-            log.debug("Loaded page " + i);
-            String response = HttpUtils.sendHttpRequest(EMPLOYERS_API_URL + "?page=" + i, "EmployerServiceImpl (getAll())");
+        for (int i = 0; i < pagesAmount; i++) {
+            log.debug("started loading page " + i);
+            String response = HttpUtils.sendHttpRequest(EMPLOYERS_API_URL + "?page=" + i + "&area=" + location, "initEmployersByLocation");
             List<Employer> currentPageEmployers = parseEmployersFromJSON(response);
             employers.addAll(currentPageEmployers);
+            log.debug("loaded page " + i);
         }
         employerCrud.saveAll(employers);
         log.debug(String.format("Employers list built (size = %d), time: %d ms", employers.size(), System.currentTimeMillis() - startTime));
     }
 
-    @Override
-    public void initData(Optional<String> vacancyName) {
-        log.debug("initData invoked");
-        deleteAllData(); //FIXME
+    public void initEmployers() {
+        List<Employer> employers = new ArrayList<>();
         long startTime = System.currentTimeMillis();
-        try {
-            if (vacancyName.isPresent()) {
-                initEmployersSortByVacancyName(vacancyName.get());
-            } else {
-                initAllEmployers();
-            }
-        } catch (Exception e) {
-            throw new DataInitialisationException("initData", e.getMessage());
+        for (int i = 0; i < pagesAmount; i++) {
+            log.debug("started loading page " + i);
+            String response = HttpUtils.sendHttpRequest(EMPLOYERS_API_URL + "?page=" + i, "initEmployers");
+            List<Employer> currentPageEmployers = parseEmployersFromJSON(response);
+            employers.addAll(currentPageEmployers);
+            log.debug("loaded page " + i);
         }
-        log.debug(String.format("Data initialisation completed, time: %d ms", System.currentTimeMillis() - startTime));
+        employerCrud.saveAll(employers);
+        log.debug(String.format("Employers list built (size = %d), time: %d ms", employers.size(), System.currentTimeMillis() - startTime));
     }
 
     @Override
@@ -220,5 +222,63 @@ public class DataInitializerImpl implements DataInitializer {
             throw new DataInitialisationException("deleteAllData", e.getMessage());
         }
         log.debug(String.format("All data removed successfully, time: %d ms", System.currentTimeMillis() - startTime));
+    }
+
+
+    private Integer calculatePagesAmount(Optional<String> vacancyName, Optional<String> location, Optional<Integer> userPagesAmount) {
+        int maxPagesAmount;
+
+        if (vacancyName.isPresent() && location.isPresent()) {
+            currentEmployerRequestUrl = EMPLOYERS_API_URL; //Fixme
+        } else if (vacancyName.isPresent()) {
+//            currentEmployerRequestUrl = EMPLOYERS_API_URL + "?name=" + vacancyName.get();
+        } else if (location.isPresent()) {
+            currentEmployerRequestUrl = EMPLOYERS_API_URL + "?area=" + location.get();
+        } else {
+            currentEmployerRequestUrl = EMPLOYERS_API_URL;
+        }
+        maxPagesAmount = countJSONResponsePages(currentEmployerRequestUrl);
+        if (userPagesAmount.isPresent() && userPagesAmount.get() <= maxPagesAmount) {
+            return userPagesAmount.get();
+        }
+        return maxPagesAmount;
+    }
+
+    @Override
+    public DataInitializerDTO refreshData(Optional<String> vacancyName, Optional<String> location, Optional<Integer> userPagesAmount) {
+        DataInitializerDTO dto = new DataInitializerDTO();
+        final long startTime = System.currentTimeMillis();
+
+        deleteAllData(); //FIXME
+        vacancyName.ifPresent(dto::setNameFilter);
+        location.ifPresent(dto::setLocationFilter);
+        pagesAmount = calculatePagesAmount(vacancyName, location, userPagesAmount);
+        log.debug("pages amount = " + pagesAmount);
+        String successDescription = "new data initialisation completed";
+
+        try {
+            if (vacancyName.isPresent() && location.isPresent()) {
+                successDescription = String.format(", filtered by vacancy name = %s and location = %s!", vacancyName.get(), location.get());
+                log.debug("initEmployersByVacancyNameAndLocation(vacancyName.get(), location.get());");
+//                initEmployersByVacancyNameAndLocation(vacancyName.get(), location.get());
+            } else if (vacancyName.isPresent()) {
+                successDescription = String.format(", filtered by vacancy name = %s", vacancyName.get());
+                initEmployersByVacancyName(vacancyName.get());
+            } else if (location.isPresent()) {
+                successDescription = String.format(", filtered by location = %s", location.get());
+                log.debug("initEmployersByLocation(location.get());");
+//                initEmployersByLocation(location.get());
+            } else {
+                initEmployers();
+            }
+        } catch (Exception e) {
+            throw new DataInitialisationException("initData", e.getMessage());
+        }
+        dto.setStatus("success");
+        dto.setLocalDateTime(LocalDateTime.now());
+        dto.setTimeSpent(System.currentTimeMillis() - startTime + "ms");
+        dto.setDescription("Previous data deleted, " + successDescription);
+        dto.setPagesAmount(pagesAmount);
+        return dto;
     }
 }
