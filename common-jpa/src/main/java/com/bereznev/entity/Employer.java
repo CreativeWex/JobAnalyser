@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -41,5 +42,5 @@ public class Employer {
     private int openVacanciesAmount;
 
     @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Vacancy> vacancies;
+    private List<Vacancy> vacancies = new ArrayList<>();
 }

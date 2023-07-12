@@ -53,6 +53,7 @@ public class EmployerServiceImpl implements EmployerService {
         }
         employerDto.setEmployers(employers);
         employerDto.setTimeSpent(System.currentTimeMillis() - startTime + "ms");
+        employerDto.setEmployersNumber(employers.size());
         return employerDto;
     }
 

@@ -1,4 +1,4 @@
-package com.bereznev.exceptions.dto;
+package com.bereznev;
 /*
     =====================================
     @author Bereznev Nikita @CreativeWex
@@ -13,7 +13,7 @@ public abstract class Dto {
     @JsonProperty("time_spent")
     protected String timeSpent;
 
-    @JsonProperty("filtered_by_name")
+    @JsonProperty("filtered_by_vacancy_name")
     protected String nameFilter = null;
 
     @JsonProperty("filtered_by_location")

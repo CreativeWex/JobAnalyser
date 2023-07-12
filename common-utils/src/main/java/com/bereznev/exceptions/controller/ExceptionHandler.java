@@ -30,7 +30,7 @@ public class ExceptionHandler {
 
     public static ResponseEntity<ErrorDTO> handleException(Exception e, String controllerPath, Optional<String> vacancyName, Optional<String> location) {
         ErrorDTO dto = new ErrorDTO();
-        if (exceptionReason.isEmpty()) {
+        if (exceptionReason == null) {
             dto.setExceptionMessage(e.getMessage());
         } else {
             dto.setExceptionMessage(exceptionReason);
