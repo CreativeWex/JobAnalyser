@@ -19,6 +19,7 @@ import java.util.List;
 @Service
 public class VacancyCrudImpl implements VacancyCrud {
     private final VacancyRepository vacancyRepository;
+    private static final String RESOURCE_NAME = "Vacancy";
 
     @Autowired
     public VacancyCrudImpl(VacancyRepository vacancyRepository) {
@@ -47,7 +48,7 @@ public class VacancyCrudImpl implements VacancyCrud {
 
     @Override
     public Vacancy getById(long vacancyId) {
-        return vacancyRepository.findById(vacancyId).orElseThrow(() -> new ResourceNotFoundException("Vacancy", "Id", vacancyId));
+        return vacancyRepository.findById(vacancyId).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "Id", vacancyId));
     }
 
     @Override
@@ -63,6 +64,13 @@ public class VacancyCrudImpl implements VacancyCrud {
         } catch (Exception e) {
             log.error("Error deleting vacancies data: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void delete(long id) {
+        vacancyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "Id", id));
+        vacancyRepository.deleteById(id);
+        log.debug("deleted, id: " + id);
     }
 
     @Override

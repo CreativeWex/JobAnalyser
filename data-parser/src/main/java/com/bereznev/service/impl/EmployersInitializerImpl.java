@@ -7,8 +7,8 @@ package com.bereznev.service.impl;
 
 import com.bereznev.InputValueFormatter;
 import com.bereznev.crud.EmployerCrud;
-import com.bereznev.dto.EmployersInitializerDTO;
-import com.bereznev.entity.Vacancy;
+import com.bereznev.dao.EmployerDao;
+import com.bereznev.dto.DataParserDTO;
 import com.bereznev.exceptions.logic.DataInitialisationException;
 import com.bereznev.service.EmployerInitializer;
 import com.bereznev.service.VacanciesInitializer;
@@ -34,13 +34,16 @@ public class EmployersInitializerImpl implements EmployerInitializer {
     private static final String EMPLOYERS_HH_API_URL = "https://api.hh.ru/employers";
 
     private final EmployerCrud employerCrud;
-
+    private final EmployerDao employerDao;
     private final VacanciesInitializer vacanciesInitializer;
     private final LocationIdCalculator locationIdCalculator;
 
+    private long pagesNumber;
+
     @Autowired
-    public EmployersInitializerImpl(EmployerCrud employerCrud, VacanciesInitializer vacanciesInitializer, LocationIdCalculator locationIdCalculator) {
+    public EmployersInitializerImpl(EmployerCrud employerCrud, EmployerDao employerDao, VacanciesInitializer vacanciesInitializer, LocationIdCalculator locationIdCalculator) {
         this.employerCrud = employerCrud;
+        this.employerDao = employerDao;
         this.vacanciesInitializer = vacanciesInitializer;
         this.locationIdCalculator = locationIdCalculator;
     }
@@ -82,6 +85,7 @@ public class EmployersInitializerImpl implements EmployerInitializer {
         } else {
             currentRequestPagesAmount = maxPagesAmount;
         }
+        pagesNumber = currentRequestPagesAmount;
 
         log.debug("Searching employers data");
         List<Employer> employers = new ArrayList<>();
@@ -109,6 +113,7 @@ public class EmployersInitializerImpl implements EmployerInitializer {
         } else {
             currentRequestPagesAmount = maxPagesAmount;
         }
+        pagesNumber = currentRequestPagesAmount;
 
         log.debug(String.format("Searching employers in region: %s (id = %d, amount = %d)", location, locationId, currentRequestPagesAmount));
         List<Employer> employers = new ArrayList<>();
@@ -123,28 +128,24 @@ public class EmployersInitializerImpl implements EmployerInitializer {
         return employers;
     }
 
-    public List<Employer> sortEmployersListByVacancyName(List<Employer> employers, String vacancyName) {
-        List<Employer> sortedEmployers = new ArrayList<>();
+    public void sortEmployersListByVacancyName(List<Employer> employers, String vacancyName) {
+        log.debug("Started sorting employers list by vacancy_name = " + vacancyName + " by deleting wrong employers");
         vacancyName = InputValueFormatter.formatInputValue(vacancyName);
         for (Employer employer : employers) {
             if (employer.getOpenVacanciesAmount() == 0) {
-                continue;
-            }
-            List<Vacancy> vacancies = employer.getVacancies();
-            for (Vacancy vacancy : vacancies) {
-                if (vacancy.getName().contains(vacancyName) || vacancy.getName().equals(vacancyName)) {
-                    sortedEmployers.add(employer);
-                    break;
-                }
+                employerCrud.delete(employer.getId());
             }
         }
+        List<Employer> employersWithoutNeededVacancies = employerDao.getAllNotLikeVacancyName(vacancyName.substring(1));
+        for (Employer employer : employersWithoutNeededVacancies) {
+            employerCrud.delete(employer.getId());
+        }
         log.debug("Employers list sorted by vacancy_name: " + vacancyName);
-        return sortedEmployers;
     }
 
     @Override
-    public EmployersInitializerDTO initData(Optional<String> vacancyName, Optional<String> location, Optional<Integer> userPagesAmount) {
-        EmployersInitializerDTO dto = new EmployersInitializerDTO();
+    public DataParserDTO initData(Optional<String> vacancyName, Optional<String> location, Optional<Integer> userPagesAmount) {
+        DataParserDTO dto = new DataParserDTO();
         final long startTime = System.currentTimeMillis();
         String successDescription = "new data initialisation completed";
 
@@ -167,17 +168,15 @@ public class EmployersInitializerImpl implements EmployerInitializer {
             throw new DataInitialisationException("initData", e.getMessage());
         }
         if (vacancyName.isPresent()) {
-            List<Employer> sortedEmployers = sortEmployersListByVacancyName(loadedEmployers, vacancyName.get());
-            employerCrud.saveAll(sortedEmployers);
+            sortEmployersListByVacancyName(loadedEmployers, vacancyName.get());
             successDescription += String.format(", sorted by vacancy_name(%s)", vacancyName.get());
-        } else {
-            employerCrud.saveAll(loadedEmployers);
         }
 
         dto.setStatus("success");
         dto.setLocalDateTime(LocalDateTime.now());
         dto.setTimeSpent(System.currentTimeMillis() - startTime + "ms");
         dto.setDescription("Previous data deleted, " + successDescription);
+        dto.setPagesAmount(pagesNumber);
         log.debug(successDescription);
         return dto;
     }

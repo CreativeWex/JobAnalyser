@@ -21,12 +21,12 @@ import java.util.Optional;
 @Log4j
 @RestController
 @RequestMapping("/api/v1/data")
-public class EmployersInitializerController {
+public class DataParserController {
     private final EmployerInitializer employerInitializer;
     private final DataDeletionService dataDeletionService;
     private static final String CONTROLLER_PATH = "/api/v1/data";
 
-    public EmployersInitializerController(EmployerInitializer employerInitializer, DataDeletionService dataDeletionService) {
+    public DataParserController(EmployerInitializer employerInitializer, DataDeletionService dataDeletionService) {
         super();
         this.employerInitializer = employerInitializer;
         this.dataDeletionService = dataDeletionService;

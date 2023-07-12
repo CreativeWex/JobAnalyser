@@ -21,5 +21,6 @@ public interface VacancyCrud {
     public void saveAll(List<Vacancy> vacancies);
 
     public void deleteAll();
+    public void delete(long id);
     public long countDatabaseLinesAmount();
 }

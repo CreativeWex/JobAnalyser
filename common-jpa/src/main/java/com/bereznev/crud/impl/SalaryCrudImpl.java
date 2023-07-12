@@ -6,6 +6,7 @@ package com.bereznev.crud.impl;
  */
 
 import com.bereznev.entity.Salary;
+import com.bereznev.exceptions.logic.ResourceNotFoundException;
 import com.bereznev.repository.SalaryRepository;
 import com.bereznev.crud.SalaryCrud;
 import lombok.extern.log4j.Log4j;
@@ -18,6 +19,7 @@ import java.util.List;
 @Service
 public class SalaryCrudImpl implements SalaryCrud {
     private final SalaryRepository salaryRepository;
+    private static final String RESOURCE_NAME = "Salary";
 
     @Autowired
     public SalaryCrudImpl(SalaryRepository salaryRepository) {
@@ -47,5 +49,12 @@ public class SalaryCrudImpl implements SalaryCrud {
     @Override
     public void saveAll(List<Salary> salaries) {
         salaryRepository.saveAll(salaries);
+    }
+
+    @Override
+    public void delete(long id) {
+        salaryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "Id", id));
+        salaryRepository.deleteById(id);
+        log.debug("deleted, id: " + id);
     }
 }

@@ -36,17 +36,17 @@ public class DataDeletionService {
         log.debug("deleteAllData invoked");
         long startTime = System.currentTimeMillis();
         try {
-            if (vacancyCrud.countDatabaseLinesAmount() > 0) {
-                vacancyCrud.deleteAll();
-            }
-            if (employerCrud.countDatabaseLinesAmount() > 0) {
-                employerCrud.deleteAll();
-            }
             if (skillCrud.countDatabaseLinesAmount() > 0) {
                 skillCrud.deleteAll();
             }
+            if (vacancyCrud.countDatabaseLinesAmount() > 0) {
+                vacancyCrud.deleteAll();
+            }
             if (salaryCrud.countDatabaseLinesAmount() > 0) {
                 salaryCrud.deleteAll();
+            }
+            if (employerCrud.countDatabaseLinesAmount() > 0) {
+                employerCrud.deleteAll();
             }
         } catch (Exception e) {
             e.printStackTrace();

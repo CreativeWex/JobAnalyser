@@ -20,5 +20,6 @@ public interface EmployerCrud {
     public Employer save(Employer employer);
     public void saveAll(List<Employer> employers);
     public void deleteAll();
+    public void delete(long id);
     public long countDatabaseLinesAmount();
 }

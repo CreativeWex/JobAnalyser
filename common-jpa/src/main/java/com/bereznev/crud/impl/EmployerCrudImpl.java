@@ -19,6 +19,7 @@ import java.util.List;
 @Service
 public class EmployerCrudImpl implements EmployerCrud {
     private final EmployerRepository employerRepository;
+    private static final String RESOURCE_NAME = "Employer";
 
     @Autowired
     public EmployerCrudImpl(EmployerRepository employerRepository) {
@@ -35,6 +36,12 @@ public class EmployerCrudImpl implements EmployerCrud {
         }
     }
 
+    @Override
+    public void delete(long id) {
+        employerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "Id", id));
+        employerRepository.deleteById(id);
+        log.debug("deleted, id: " + id);
+    }
     @Override
     public long countDatabaseLinesAmount() {
         return employerRepository.count();

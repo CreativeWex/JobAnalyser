@@ -17,13 +17,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class EmployersInitializerDTO extends Dto {
+public class DataParserDTO extends Dto {
     private String status;
 
     private String description;
 
     @JsonProperty("pages_amount")
-    private Integer pagesAmount;
+    private long pagesAmount;
 
     @JsonProperty("date_time")
     private LocalDateTime localDateTime;

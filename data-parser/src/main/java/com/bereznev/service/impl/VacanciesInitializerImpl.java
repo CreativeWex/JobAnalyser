@@ -55,6 +55,7 @@ public class VacanciesInitializerImpl implements VacanciesInitializer {
         for (Vacancy vacancy : vacancies) {
             fillVacancyFields(vacancy);
         }
+        employer.setVacancies(vacancies);
     }
 
     @Override

@@ -5,10 +5,10 @@ package com.bereznev.service;
     =====================================
  */
 
-import com.bereznev.dto.EmployersInitializerDTO;
+import com.bereznev.dto.DataParserDTO;
 
 import java.util.Optional;
 
 public interface EmployerInitializer {
-    public EmployersInitializerDTO initData(Optional<String> vacancyName, Optional<String> location, Optional<Integer> pagesAmount);
+    public DataParserDTO initData(Optional<String> vacancyName, Optional<String> location, Optional<Integer> pagesAmount);
 }
