@@ -7,7 +7,7 @@ package com.bereznev.service.impl;
 
 import com.bereznev.InputValueFormatter;
 import com.bereznev.crud.EmployerCrud;
-import com.bereznev.dto.DataInitializerDTO;
+import com.bereznev.dto.EmployersInitializerDTO;
 import com.bereznev.entity.Vacancy;
 import com.bereznev.exceptions.logic.DataInitialisationException;
 import com.bereznev.service.EmployerInitializer;
@@ -34,6 +34,7 @@ public class EmployersInitializerImpl implements EmployerInitializer {
     private static final String EMPLOYERS_HH_API_URL = "https://api.hh.ru/employers";
 
     private final EmployerCrud employerCrud;
+
     private final VacanciesInitializer vacanciesInitializer;
     private final LocationIdCalculator locationIdCalculator;
 
@@ -142,12 +143,11 @@ public class EmployersInitializerImpl implements EmployerInitializer {
     }
 
     @Override
-    public DataInitializerDTO refreshData(Optional<String> vacancyName, Optional<String> location, Optional<Integer> userPagesAmount) {
-        DataInitializerDTO dto = new DataInitializerDTO();
+    public EmployersInitializerDTO initData(Optional<String> vacancyName, Optional<String> location, Optional<Integer> userPagesAmount) {
+        EmployersInitializerDTO dto = new EmployersInitializerDTO();
         final long startTime = System.currentTimeMillis();
         String successDescription = "new data initialisation completed";
 
-        deleteAllData(); //FIXME
         if (vacancyName.isPresent()) {
             dto.setNameFilter(vacancyName.get());
         }
@@ -180,27 +180,5 @@ public class EmployersInitializerImpl implements EmployerInitializer {
         dto.setDescription("Previous data deleted, " + successDescription);
         log.debug(successDescription);
         return dto;
-    }
-
-    @Override
-    public void deleteAllData() {
-        log.debug("deleteAllData invoked");
-        long startTime = System.currentTimeMillis();
-
-//        try {
-//            if (vacancyCrud.countDatabaseLinesAmount() > 0) {
-//                vacancyCrud.deleteAll();
-//            }
-//            if (salaryCrud.countDatabaseLinesAmount() > 0) {
-//                salaryCrud.deleteAll();
-//            }
-//            if (employerCrud.countDatabaseLinesAmount() > 0) {
-//                employerCrud.deleteAll();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new DataInitialisationException("deleteAllData", e.getMessage());
-//        }
-        log.debug(String.format("All data removed successfully, time: %d ms", System.currentTimeMillis() - startTime));
     }
 }

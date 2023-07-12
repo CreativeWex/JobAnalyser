@@ -7,6 +7,7 @@ package com.bereznev.controller;
 
 import com.bereznev.exceptions.controller.ExceptionHandler;
 import com.bereznev.service.EmployerInitializer;
+import com.bereznev.service.impl.DataDeletionService;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,15 @@ import java.util.Optional;
 @Log4j
 @RestController
 @RequestMapping("/api/v1/data")
-public class DataInitializerController {
+public class EmployersInitializerController {
     private final EmployerInitializer employerInitializer;
-
+    private final DataDeletionService dataDeletionService;
     private static final String CONTROLLER_PATH = "/api/v1/data";
 
-    public DataInitializerController(EmployerInitializer employerInitializer) {
+    public EmployersInitializerController(EmployerInitializer employerInitializer, DataDeletionService dataDeletionService) {
         super();
         this.employerInitializer = employerInitializer;
+        this.dataDeletionService = dataDeletionService;
     }
 
     @GetMapping("/refresh")
@@ -36,7 +38,8 @@ public class DataInitializerController {
             @RequestParam(value = "location", required = false) Optional<String> location,
             @RequestParam(value = "pages_amount", required = false) Optional<Integer> pagesAmount) {
         try {
-            return new ResponseEntity<>(employerInitializer.refreshData(vacancyName, location, pagesAmount), HttpStatus.OK);
+            dataDeletionService.deleteAllData();
+            return new ResponseEntity<>(employerInitializer.initData(vacancyName, location, pagesAmount), HttpStatus.OK);
         } catch (Exception e) {
             return ExceptionHandler.handleException(e, CONTROLLER_PATH + "/refresh", vacancyName, location);
         }

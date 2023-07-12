@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class DataInitializerDTO extends Dto {
+public class EmployersInitializerDTO extends Dto {
     private String status;
 
     private String description;
