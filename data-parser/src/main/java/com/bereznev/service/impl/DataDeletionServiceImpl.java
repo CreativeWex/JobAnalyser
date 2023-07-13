@@ -10,6 +10,7 @@ import com.bereznev.crud.SalaryCrud;
 import com.bereznev.crud.SkillCrud;
 import com.bereznev.crud.VacancyCrud;
 import com.bereznev.exceptions.logic.DataInitialisationException;
+import com.bereznev.service.DataDeletionService;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,21 +18,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Log4j
 @Service
-public class DataDeletionService {
+@Transactional
+public class DataDeletionServiceImpl implements DataDeletionService {
     private final EmployerCrud employerCrud;
     private final VacancyCrud vacancyCrud;
     private final SalaryCrud salaryCrud;
     private final SkillCrud skillCrud;
 
     @Autowired
-    public DataDeletionService(EmployerCrud employerCrud, VacancyCrud vacancyCrud, SalaryCrud salaryCrud, SkillCrud skillCrud) {
+    public DataDeletionServiceImpl(EmployerCrud employerCrud, VacancyCrud vacancyCrud, SalaryCrud salaryCrud, SkillCrud skillCrud) {
         this.employerCrud = employerCrud;
         this.vacancyCrud = vacancyCrud;
         this.salaryCrud = salaryCrud;
         this.skillCrud = skillCrud;
     }
 
-    @Transactional
     public void deleteAllData() {
         log.debug("deleteAllData invoked");
         long startTime = System.currentTimeMillis();

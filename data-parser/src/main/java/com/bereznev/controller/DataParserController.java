@@ -6,8 +6,8 @@ package com.bereznev.controller;
  */
 
 import com.bereznev.exceptions.controller.ExceptionHandler;
-import com.bereznev.service.EmployerInitializer;
-import com.bereznev.service.impl.DataDeletionService;
+import com.bereznev.service.EmployerInitService;
+import com.bereznev.service.impl.DataDeletionServiceImpl;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +22,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/data")
 public class DataParserController {
-    private final EmployerInitializer employerInitializer;
-    private final DataDeletionService dataDeletionService;
+    private final EmployerInitService employerInitService;
+    private final DataDeletionServiceImpl dataDeletionService;
     private static final String CONTROLLER_PATH = "/api/v1/data";
 
-    public DataParserController(EmployerInitializer employerInitializer, DataDeletionService dataDeletionService) {
+    public DataParserController(EmployerInitService employerInitService, DataDeletionServiceImpl dataDeletionService) {
         super();
-        this.employerInitializer = employerInitializer;
+        this.employerInitService = employerInitService;
         this.dataDeletionService = dataDeletionService;
     }
 
@@ -39,7 +39,7 @@ public class DataParserController {
             @RequestParam(value = "pages_amount", required = false) Optional<Integer> pagesAmount) {
         try {
             dataDeletionService.deleteAllData();
-            return new ResponseEntity<>(employerInitializer.initData(vacancyName, location, pagesAmount), HttpStatus.OK);
+            return new ResponseEntity<>(employerInitService.initData(vacancyName, location, pagesAmount), HttpStatus.OK);
         } catch (Exception e) {
             return ExceptionHandler.handleException(e, CONTROLLER_PATH + "/refresh", vacancyName, location);
         }

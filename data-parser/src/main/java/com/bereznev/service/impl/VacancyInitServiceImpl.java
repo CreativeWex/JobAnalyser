@@ -12,7 +12,8 @@ import com.bereznev.entity.Employer;
 import com.bereznev.entity.Salary;
 import com.bereznev.entity.Skill;
 import com.bereznev.entity.Vacancy;
-import com.bereznev.service.VacanciesInitializer;
+import com.bereznev.repository.VacancyRepository;
+import com.bereznev.service.VacancyInitService;
 import com.bereznev.mapper.VacanciesMapper;
 import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
@@ -20,6 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.extern.log4j.Log4j;
+import org.aspectj.apache.bcel.generic.FieldGenOrMethodGen;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,16 +31,18 @@ import java.util.List;
 
 @Log4j
 @Service
-public class VacanciesInitializerImpl implements VacanciesInitializer {
+public class VacancyInitServiceImpl implements VacancyInitService {
     private static final String VACANCY_API_URL = "https://api.hh.ru/vacancies";
 
     private final VacancyCrud vacancyCrud;
+    private final VacancyRepository vacancyRepository;
     private final SalaryCrud salaryCrud;
     private final SkillCrud skillCrud;
 
     @Autowired
-    public VacanciesInitializerImpl(VacancyCrud vacancyCrud, SalaryCrud salaryCrud, SkillCrud skillCrud) {
+    public VacancyInitServiceImpl(VacancyCrud vacancyCrud, VacancyRepository vacancyRepository, SalaryCrud salaryCrud, SkillCrud skillCrud) {
         this.vacancyCrud = vacancyCrud;
+        this.vacancyRepository = vacancyRepository;
         this.salaryCrud = salaryCrud;
         this.skillCrud = skillCrud;
     }
@@ -119,5 +123,18 @@ public class VacanciesInitializerImpl implements VacanciesInitializer {
         }
         vacancy.setSalary(salary);
         salary.setVacancy(vacancy);
+    }
+
+    @Override
+    public void deleteVacanciesForEmployers(Employer employer) {
+        List<Vacancy> vacancies = employer.getVacancies();
+        for (Vacancy vacancy : vacancies) {
+            Salary salary = vacancy.getSalary();
+            if (salary != null) {
+                vacancy.setSalary(null);
+                salaryCrud.delete(salary.getId());
+            }
+            vacancyCrud.delete(vacancy.getId());
+        }
     }
 }

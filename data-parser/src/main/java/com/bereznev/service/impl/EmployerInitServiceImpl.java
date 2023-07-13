@@ -7,11 +7,11 @@ package com.bereznev.service.impl;
 
 import com.bereznev.InputValueFormatter;
 import com.bereznev.crud.EmployerCrud;
-import com.bereznev.dao.EmployerDao;
 import com.bereznev.dto.DataParserDTO;
 import com.bereznev.exceptions.logic.DataInitialisationException;
-import com.bereznev.service.EmployerInitializer;
-import com.bereznev.service.VacanciesInitializer;
+import com.bereznev.repository.EmployerRepository;
+import com.bereznev.service.EmployerInitService;
+import com.bereznev.service.VacancyInitService;
 import com.bereznev.mapper.EmployersMapper;
 import com.bereznev.entity.Employer;
 import com.bereznev.utils.HttpUtils;
@@ -30,21 +30,21 @@ import java.util.Optional;
 @Log4j
 @Service
 @Transactional
-public class EmployersInitializerImpl implements EmployerInitializer {
+public class EmployerInitServiceImpl implements EmployerInitService {
     private static final String EMPLOYERS_HH_API_URL = "https://api.hh.ru/employers";
 
     private final EmployerCrud employerCrud;
-    private final EmployerDao employerDao;
-    private final VacanciesInitializer vacanciesInitializer;
+    private final EmployerRepository employerRepository;
+    private final VacancyInitService vacancyInitService;
     private final LocationIdCalculator locationIdCalculator;
 
     private long pagesNumber;
 
     @Autowired
-    public EmployersInitializerImpl(EmployerCrud employerCrud, EmployerDao employerDao, VacanciesInitializer vacanciesInitializer, LocationIdCalculator locationIdCalculator) {
+    public EmployerInitServiceImpl(EmployerCrud employerCrud, EmployerRepository employerRepository, VacancyInitService vacancyInitService, LocationIdCalculator locationIdCalculator) {
         this.employerCrud = employerCrud;
-        this.employerDao = employerDao;
-        this.vacanciesInitializer = vacanciesInitializer;
+        this.employerRepository = employerRepository;
+        this.vacancyInitService = vacancyInitService;
         this.locationIdCalculator = locationIdCalculator;
     }
 
@@ -71,7 +71,7 @@ public class EmployersInitializerImpl implements EmployerInitializer {
             }
             employer.setOpenVacanciesAmount(jsonObject.optInt("open_vacancies"));
             employerCrud.save(employer);
-            vacanciesInitializer.fillVacanciesForEmployer(employer);
+            vacancyInitService.fillVacanciesForEmployer(employer);
         }
         return employers;
     }
@@ -128,6 +128,10 @@ public class EmployersInitializerImpl implements EmployerInitializer {
         return employers;
     }
 
+    public List<Employer> getAllNotLikeVacancyName(String vacancyName) {
+        return employerRepository.getAllNotLikeVacancyName(vacancyName);
+    }
+
     public void sortEmployersListByVacancyName(List<Employer> employers, String vacancyName) {
         log.debug("Started sorting employers list by vacancy_name = " + vacancyName + " by deleting wrong employers");
         vacancyName = InputValueFormatter.formatInputValue(vacancyName);
@@ -136,9 +140,10 @@ public class EmployersInitializerImpl implements EmployerInitializer {
                 employerCrud.delete(employer.getId());
             }
         }
-        List<Employer> employersWithoutNeededVacancies = employerDao.getAllNotLikeVacancyName(vacancyName.substring(1));
+        List<Employer> employersWithoutNeededVacancies = getAllNotLikeVacancyName(vacancyName.substring(1));
         for (Employer employer : employersWithoutNeededVacancies) {
             employerCrud.delete(employer.getId());
+            vacancyInitService.deleteVacanciesForEmployers(employer);
         }
         log.debug("Employers list sorted by vacancy_name: " + vacancyName);
     }
@@ -165,13 +170,17 @@ public class EmployersInitializerImpl implements EmployerInitializer {
                 loadedEmployers = getAllEmployers(userPagesAmount);
             }
         } catch (Exception e) {
-            throw new DataInitialisationException("initData", e.getMessage());
-        }
-        if (vacancyName.isPresent()) {
-            sortEmployersListByVacancyName(loadedEmployers, vacancyName.get());
-            successDescription += String.format(", sorted by vacancy_name(%s)", vacancyName.get());
+            throw new DataInitialisationException("initData - loading employers data exception: ", e.getMessage());
         }
 
+        try {
+            if (vacancyName.isPresent()) {
+                sortEmployersListByVacancyName(loadedEmployers, vacancyName.get());
+                successDescription += String.format(", sorted by vacancy_name(%s)", vacancyName.get());
+            }
+        } catch (Exception e) {
+            throw new DataInitialisationException("initData - sorting data by vacancy_name exception: ", e.getMessage());
+        }
         dto.setStatus("success");
         dto.setLocalDateTime(LocalDateTime.now());
         dto.setTimeSpent(System.currentTimeMillis() - startTime + "ms");
