@@ -5,7 +5,6 @@ package com.bereznev.controller;
     =====================================
  */
 
-import com.bereznev.dto.VacancyDto;
 import com.bereznev.exceptions.controller.ExceptionHandler;
 import com.bereznev.service.SalaryService;
 import com.bereznev.service.VacancyService;
