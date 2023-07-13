@@ -8,6 +8,7 @@ package com.bereznev.service.impl;
 import com.bereznev.InputValueFormatter;
 import com.bereznev.exceptions.logic.ResourceNotFoundException;
 import com.bereznev.mapper.AreaMapper;
+import com.bereznev.service.LocationAnalyserService;
 import com.bereznev.utils.HttpUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -19,7 +20,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 @Service
-public class LocationIdCalculator {
+public class LocationAnalyserServiceImpl implements LocationAnalyserService {
     private long locationId = Integer.MIN_VALUE;
     private void recursiveAreaTraversal(List<AreaMapper> areaList, String locationName) {
         for (AreaMapper area : areaList) {
@@ -32,6 +33,7 @@ public class LocationIdCalculator {
         }
     }
 
+    @Override
     public long findHhLocationIdByName(String locationName) {
         Gson gson = new Gson();
         locationName = InputValueFormatter.formatInputValue(locationName);

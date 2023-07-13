@@ -36,12 +36,12 @@ public class EmployerInitServiceImpl implements EmployerInitService {
     private final EmployerCrud employerCrud;
     private final EmployerRepository employerRepository;
     private final VacancyInitService vacancyInitService;
-    private final LocationIdCalculator locationIdCalculator;
+    private final LocationAnalyserServiceImpl locationIdCalculator;
 
     private long pagesNumber;
 
     @Autowired
-    public EmployerInitServiceImpl(EmployerCrud employerCrud, EmployerRepository employerRepository, VacancyInitService vacancyInitService, LocationIdCalculator locationIdCalculator) {
+    public EmployerInitServiceImpl(EmployerCrud employerCrud, EmployerRepository employerRepository, VacancyInitService vacancyInitService, LocationAnalyserServiceImpl locationIdCalculator) {
         this.employerCrud = employerCrud;
         this.employerRepository = employerRepository;
         this.vacancyInitService = vacancyInitService;
