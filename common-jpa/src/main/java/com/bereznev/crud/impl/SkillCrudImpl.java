@@ -11,6 +11,8 @@ import com.bereznev.exceptions.logic.ResourceNotFoundException;
 import com.bereznev.repository.SkillRepository;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,16 +29,19 @@ public class SkillCrudImpl implements SkillCrud {
     }
 
     @Override
+    @CachePut(value = "skills", key = "#result.id")
     public void saveAll(List<Skill> skills) {
         skillRepository.saveAll(skills);
     }
 
     @Override
+    @CachePut(value = "skills", key = "#result.id")
     public void save(Skill skill) {
         skillRepository.save(skill);
     }
 
     @Override
+    @CacheEvict(value = "skills")
     public void deleteAll() {
         try {
             skillRepository.deleteAll();
@@ -47,6 +52,7 @@ public class SkillCrudImpl implements SkillCrud {
     }
 
     @Override
+    @CacheEvict(value = "skills", key = "#id")
     public void delete(long id) {
         skillRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "Id", id));
         skillRepository.deleteById(id);
