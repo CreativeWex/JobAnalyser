@@ -53,7 +53,7 @@ public class EmployerCrudImpl implements EmployerCrud {
     }
 
     @Override
-    @Cacheable(value = "tasks", key = "#employerId")
+    @Cacheable(value = "employers", key = "#employerId")
     public Employer getById(long employerId) {
         return employerRepository.findById(employerId).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "Id", employerId));
     }
