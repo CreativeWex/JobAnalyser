@@ -11,6 +11,7 @@
 - [Использованные технологии](#tools).
 - [Архитектурные решения](#architecture).
 - [Запуск и настройка приложения](#starting).
+- [Endpoints](#endoints).
 
 
 <a name="functions"></a>
@@ -111,3 +112,63 @@ server.port=
 
 2. Запуск сервиса-парсера (по умолчанию порт 8085).
 3. Запуск сервиса для анализа собранной статистики (по умолчанию порт 8086).
+
+<a name="endpoints"></a>
+## Endpoints
+
+## data-parser
+**Порт**: 8085.
+
+HTTP GET: `/api/v1/data/refresh` - собирает данные о работодателях и их открытых вакансиях.
+
+| Параметр     | Обязятелен | Описание                                                                                                                  |
+|--------------|------------|---------------------------------------------------------------------------------------------------------------------------|
+| vacancy_name | false      | Собрать данные только о тех работодателях, у которых есть вакансия <vacancy_name>                                         |
+| location     | false      | Собрать данные о работодателях в определенном городе/стране/районе <location>                                             |
+| pages_amount | false      | Установить количество страниц с данными для загрузки (1 страница ~ 20 позиций), по умолчанию загружаться будут все данные |
+
+Пример запроса:
+`:8085/api/v1/data/refresh?location=казань&pages_amount=1`
+
+Пример ответа:
+```json
+{
+  "status": "success",
+  "description": "Previous data deleted, new data initialisation completed, sorted by location(казань)",
+  "time_spent": "2501ms",
+  "filtered_by_vacancy_name": null,
+  "filtered_by_location": "казань",
+  "pages_amount": 1,
+  "date_time": "2023-07-15T01:55:58.4046538"
+}
+```
+
+Пример запроса:
+`:8085/api/v1/data/refresh?vacancy_name=java+разрабочик&pages_amount=1`
+
+Пример ответа:
+```json
+{
+  "status": "success",
+  "description": "Previous data deleted, new data initialisation completed, sorted by vacancy_name(java разрабочик)",
+  "time_spent": "3284ms",
+  "filtered_by_vacancy_name": "java разрабочик",
+  "filtered_by_location": null,
+  "pages_amount": 1,
+  "date_time": "2023-07-15T01:58:37.6700729"
+}
+```
+
+Пример ответа с ошибкой:
+```json
+{
+    "status": "error",
+    "time_spent": null,
+    "filtered_by_vacancy_name": null,
+    "filtered_by_location": "фцвфцвфцв",
+    "date_time": "2023-07-15T02:04:20.5552602",
+    "description": "Http request sending error, message: Location not found. Response status: 404. Evoked from DataInitializerImpl (fillVacanciesForEmployer)",
+    "path": "/api/v1/data/refresh"
+}
+```
+
