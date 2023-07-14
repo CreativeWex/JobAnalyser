@@ -172,3 +172,4 @@ HTTP GET: `/api/v1/data/refresh` - собирает данные о работо
 }
 ```
 
+## vacancy-analyser
