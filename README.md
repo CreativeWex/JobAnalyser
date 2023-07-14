@@ -11,7 +11,7 @@
 - [Использованные технологии](#tools).
 - [Архитектурные решения](#architecture).
 - [Запуск и настройка приложения](#starting).
-- [Endpoints](#endoints).
+- [Endpoints](#endpoints).
 
 
 <a name="functions"></a>
