@@ -5,9 +5,6 @@ package com.bereznev.service;
     =====================================
  */
 
-import java.util.Optional;
-
-public interface DataInitializer {
-    public void initData(Optional<String> vacancyName);
+public interface DataDeletionService {
     public void deleteAllData();
 }

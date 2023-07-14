@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface SalaryCrud {
     public void deleteAll();
+    public void delete(long id);
     public Salary save(Salary salary);
     public long countDatabaseLinesAmount();
     public void saveAll(List<Salary> salaries);

@@ -5,6 +5,7 @@ package com.bereznev.repository;
     =====================================
  */
 
+import com.bereznev.entity.Employer;
 import com.bereznev.entity.Vacancy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,8 +24,5 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
     @Query(value = "SELECT v FROM Vacancy v WHERE v.name LIKE %?1% AND v.location LIKE %?2%")
     public List<Vacancy> getAllByNameAndLocation(String vacancyName, String location);
 
-    @Query(value = "DELETE FROM vacancies WHERE id >= 0", nativeQuery = true)
-    public void deleteAll();
-
-    public long count();
+    void deleteVacanciesByEmployer(Employer employer);
 }

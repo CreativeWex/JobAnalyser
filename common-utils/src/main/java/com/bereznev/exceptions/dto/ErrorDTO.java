@@ -6,6 +6,7 @@ package com.bereznev.exceptions.dto;
  */
 
 
+import com.bereznev.Dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -35,6 +35,7 @@ public class EmployerController {
             @RequestParam(value = "vacancy", required = false) Optional<String> vacancyName,
             @RequestParam(value = "location", required = false) Optional<String> location) {
         try {
+            //is vacancies open
             return new ResponseEntity<>(employerService.getAll(vacancyName, location), HttpStatus.OK);
         } catch (Exception e) {
             return ExceptionHandler.handleException(e, CONTROLLER_PATH);

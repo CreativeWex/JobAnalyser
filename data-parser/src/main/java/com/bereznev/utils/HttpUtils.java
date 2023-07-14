@@ -5,8 +5,7 @@ package com.bereznev.utils;
     =====================================
  */
 
-import com.bereznev.exceptions.dto.ErrorDTO;
-import com.google.gson.Gson;
+import com.bereznev.exceptions.controller.ExceptionHandler;
 import lombok.extern.log4j.Log4j;
 
 import java.io.BufferedReader;
@@ -22,7 +21,7 @@ public class HttpUtils {
     }
 
     public static String sendHttpRequest(String url, String resource) {
-        int responseCode = 500;
+        int responseCode;
         try {
             URL requestUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
@@ -41,12 +40,12 @@ public class HttpUtils {
             bufferedReader.close();
             connection.disconnect();
             return response.toString();
-        } catch (IOException e) { //FIXME
-            ErrorDTO errorDTO = new ErrorDTO();
-            errorDTO.setEndpoint(url);
-            errorDTO.setExceptionMessage(e.getMessage());
-            log.debug(errorDTO);
-            return new Gson().toJson(errorDTO);
+        } catch (IOException e) {
+            String errorMessage = "Http request sending error, message: " + e.getMessage() + ". Evoked from " + resource;
+            ExceptionHandler.exceptionReason = errorMessage;
+            log.debug(errorMessage);
+            e.printStackTrace();
+            return errorMessage;
         }
     }
 }

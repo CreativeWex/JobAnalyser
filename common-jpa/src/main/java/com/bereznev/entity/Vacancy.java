@@ -64,7 +64,7 @@ public class Vacancy {
 
     //TODO: поправить отображение работодателей для каждой вакансии
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employer_id", nullable = false)
     private Employer employer;
 }

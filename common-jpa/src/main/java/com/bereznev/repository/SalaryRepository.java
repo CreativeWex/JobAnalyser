@@ -13,9 +13,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SalaryRepository extends JpaRepository<Salary, Long> {
-    @Query(value = "DELETE FROM salaries where id >= 0", nativeQuery = true)
-    public void deleteAll();
-
     @Query("SELECT v FROM Vacancy v WHERE v.salary.minimalAmount > 0 AND v.name LIKE %?1% ORDER BY v.salary.minimalAmount ASC LIMIT 1")
     public Vacancy findFirstVacancyWithMinimalSalary(String vacancyName);
 
@@ -27,6 +24,4 @@ public interface SalaryRepository extends JpaRepository<Salary, Long> {
 
     @Query("SELECT v FROM Vacancy v WHERE v.salary.maximumAmount > 0  AND v.name LIKE %?1% ORDER BY v.salary.minimalAmount DESC LIMIT 1")
     public Vacancy findFirstVacancyWithMaximalSalary(String vacancyName);
-
-    long count();
 }

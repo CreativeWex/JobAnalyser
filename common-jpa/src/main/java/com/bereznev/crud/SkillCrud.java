@@ -13,5 +13,6 @@ public interface SkillCrud {
     public void saveAll(List<Skill> skills);
     public void save(Skill skill);
     public void deleteAll();
+    public void delete(long id);
     public long countDatabaseLinesAmount();
 }
